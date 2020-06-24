@@ -131,19 +131,26 @@
     </div>
 
     <script>
-      $(document).ready(function () {
+      let ganmen = function(){
         let img = document.createElement('img');
+        let documentHeight = $(document).height();
+        let documentWidth = $(document).width();
+        let top = Math.floor(Math.random() * (documentHeight));
+        let left = Math.floor(Math.random() * (documentWidth));
         img.setAttribute('style', 'position: absolute;')
         img.setAttribute('src', 'ganmenx128.png');
-        $(img).offset({top: 0, left: 0});
+        $(img).offset({top: top, left: left});
         console.log(img);
         document.body.appendChild(img);
         setInterval(() => {
-          let documentHeight = $(document).height();
-          let documentWidth = $(document).width();
-          let top = Math.floor(Math.random() * (documentHeight/2));
-          let left = Math.floor(Math.random() * (documentWidth/2));
+          top = Math.floor(Math.random() * (documentHeight));
+          left = Math.floor(Math.random() * (documentWidth));
           $(img).animate({top: top+"px", left: left+"px"}, 500);
+        }, 1000);
+      };
+      $(document).ready(function () {
+        setInterval(() => {
+          ganmen();
         }, 1000);
 
         // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
