@@ -1,3 +1,6 @@
+# SuperCrazy
+
+[Super Crazy Boy](https://super-crazy.jp/)
 
 # 開発環境の構築
 - npm i -g firebase-tools
