@@ -30,41 +30,50 @@
         padding: 0px;
         margin: 0px;
         background-image: url(super-crazy.jpg);
-        background-size:150px 150px;
+        background-repeat: no-repeat;
+        background-position: top center;
+        background-size: 45%;
         color: white;
-        -webkit-text-stroke: 2px black;
         cursor: url(ganmenx32.png), auto !important;
         }
-      h1, h2 {
+      h1 {
         font-size: 5em;
+        -webkit-text-stroke: 2px black;
         }
+      h2 {
+        color: red;
+        font-size: 15em;
+        -webkit-text-stroke: 2px yellow;
+      }
       h3 {
         font-size: 4em;
         color: red;
         animation: buruburu 0.2s linear infinite;
+        -webkit-text-stroke: 2px yellow;
       }
       h4 {
-        font-size: 3em !important;
+        font-size: 5em !important;
+        -webkit-text-stroke: 2px black;
       }
       div#twitter-widget-wrap {
 
       }
       .twitter-share-button {
-        animation: guruguru 1s linear infinite;
-        margin-left: 50%;
+        transform: scale(4, 4);
+        /**position: absolute !important;
+        top: 100px;
+        right: 170px;
+        margin-left: 50%;**/
       }
-      #wrap2 {
-        position: absolute;
-        top: 0px;
-        right: 0px;
-        padding: 0px;
-        margin: 0px;
-        transform:scale(0.3, 0.3);
+      #wrap1 {
+        text-align: center;
+        margin-top: 50%;
       }
       #youtube-embed {
+        transform:scale(0.1, 0.1);
         position: absolute;
-        top: 0px;
-        right: 0px;
+        top: -120px;
+        left: -240px;
       }
       @keyframes guruguru {
         0%   { transform: scale(5, 5) rotate(0deg); }
@@ -85,7 +94,8 @@
     </style>
   </head>
   <body>
-    <h1><marquee scrollamount="50">東京都知事候補者 西本誠 スーパークレイジー君 公認サイト</marquee></h1>
+
+    <iframe id="youtube-embed" width="560" height="315" src="https://www.youtube.com/embed/kJoXoU8qKSk?rel=0&controls=0&autoplay=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
     <div id="wrap1">
       <a class="twitter-share-button"
@@ -105,18 +115,13 @@
       Follow @shibaichutatu88</a>
     </div>
 
-
-    <div id="wrap2">
-      <iframe id="youtube-embed" width="560" height="315" src="https://www.youtube.com/embed/kJoXoU8qKSk?rel=0&controls=0&autoplay=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-    </div>
-
     <div id="wrap3">
       <h2>百合子か、俺か</h2>
       <iframe src="https://open.spotify.com/embed/album/5AP2EN2Vnuc6bhTDd69EzL" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
     </div>
 
     <div id="wrap3">
-      <h2>選挙公約</h2>
+      <h3>選挙公約</h3>
       <h3>風営法の緩和</h3>
       <h4>風俗営業をはじめとする全ての飲食業の経済再開</h4>
       <h4>営業時間の規定を撤廃 24時間営業を推進します</h4>
@@ -149,9 +154,11 @@
         }, 1000);
       };
       $(document).ready(function () {
-        setInterval(() => {
-          ganmen();
-        }, 1000);
+        $(window).scroll(function() {
+          setInterval(() => {
+            ganmen();
+          }, 1000);
+        });
 
         // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
         // // The Firebase SDK is initialized and available here!
