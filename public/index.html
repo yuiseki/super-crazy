@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>東京都知事候補者 西本誠 スーパークレイジー君 非公式サイト</title>
+
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/7.15.4/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/7.15.4/firebase-auth.js"></script>
+    <script defer src="/__/firebase/7.15.4/firebase-database.js"></script>
+    <script defer src="/__/firebase/7.15.4/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/7.15.4/firebase-storage.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+    <style media="screen">
+      body {
+        padding: 0px;
+        margin: 0px;
+        background-image: url(super-crazy.jpg);
+        background-size:100px 100px;
+        color: white;
+        -webkit-text-stroke: 3px black;
+        }
+      h1, h2, h3 {
+        font-size: 5em;
+        }
+      h3 {
+        color: red;
+      }
+      div#twitter-widget-wrap {
+
+      }
+      #twitter-widget-0 {
+        animation: rotate-anime 1s linear infinite;
+        margin-left: 50%;
+      }
+      #wrap2 {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        padding: 0px;
+        margin: 0px;
+        transform:scale(0.3, 0.3);
+      }
+      #youtube-embed {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+      }
+      @keyframes rotate-anime {
+        0%   { transform: scale(5, 5) rotate(0deg); }
+        100% { transform: scale(5, 5) rotate(360deg); }
+      }
+      #wrap3 {
+        margin-top: 200px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1><marquee scrollamount="50">東京都知事候補者 西本誠 スーパークレイジー君 非公式サイト</marquee></h1>
+
+    <div id="wrap1">
+      <a class="twitter-share-button"
+        href="https://twitter.com/intent/tweet"
+        data-size="large">
+          Tweet
+      </a>
+    </div>
+
+    <div id="wrap2">
+      <iframe id="youtube-embed" width="560" height="315" src="https://www.youtube.com/embed/5gidLzGLooQ?rel=0&controls=0&autoplay=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <div id="wrap3">
+      <h2>選挙公約</h2>
+      <h3>風営法の緩和</h3>
+      <h3>ペット殺処分ゼロ</h3>
+      <h3>待機児童ゼロ</h3>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+        // // The Firebase SDK is initialized and available here!
+        //
+        // firebase.auth().onAuthStateChanged(user => { });
+        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
+        // firebase.messaging().requestPermission().then(() => { });
+        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
+        //
+        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+
+        try {
+          let app = firebase.app();
+          let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
+          document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
+        } catch (e) {
+          console.error(e);
+          document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
+        }
+      });
+    </script>
+  </body>
+</html>
