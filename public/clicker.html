@@ -5,7 +5,7 @@
     <title>スーパークレイジー君 クリッカー</title>
     <style>
     * { padding: 0; margin: 0; }
-    canvas { background: #eee; display: block; margin: 0 auto; }
+    canvas { display: block; margin: 0 auto; }
     .twitter-share-button {
         transform: scale(3, 3);
         margin-top: 200px;
@@ -13,11 +13,8 @@
     }
     </style>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-    <!--
-      original: 
-        - https://developer.mozilla.org/ja/docs/Games/Workflows/2D_Breakout_game_pure_JavaScript
-        - https://github.com/end3r/Gamedev-Canvas-workshop/blob/gh-pages/lesson10.html
-    -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+
 </head>
 <body>
 
@@ -45,6 +42,7 @@
         switch(e.which){
           case 1:
             leftPressed = true;
+            createGanmen();
             break;
           case 2:
             centerPressed = true;
@@ -67,14 +65,29 @@
             break;
         }
     }
+    function createGanmen(){
+      let img = document.createElement('img');
+      let documentHeight = $(document).height();
+      let documentWidth = $(document).width();
+      let top = 0;
+      let left = Math.floor(Math.random() * (documentWidth));
+      img.setAttribute('style', 'position: absolute;')
+      img.setAttribute('src', 'ganmenx32.png');
+      $(img).offset({top: top, left: left});
+      document.body.appendChild(img);
+      setInterval(() => {
+        top = top + 1;
+        $(img).animate({top: top+"%"}, 100);
+      }, 100);
+    };
 
     var ganmenx128 = new Image();
     ganmenx128.src = "ganmenx128.png";
-    function drawSuperCrazyUp() {
-        ctx.drawImage(ganmenx128, 0, 0, 128, 128, centerX, centerY, 128, 128)
-    }
     function drawSuperCrazyDown() {
         ctx.drawImage(ganmenx128, 0, 0, 128, 128, centerX+32, centerY+32, 64, 54)
+    }
+    function drawSuperCrazyUp() {
+        ctx.drawImage(ganmenx128, 0, 0, 128, 128, centerX, centerY, 128, 128)
     }
 
     function draw() {
