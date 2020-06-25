@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>スーパークレイジー君 クリッカー</title>
+    <style>
+    * { padding: 0; margin: 0; }
+    canvas { background: #eee; display: block; margin: 0 auto; }
+    .twitter-share-button {
+        transform: scale(3, 3);
+        margin-top: 200px;
+        margin-left: 49%;
+    }
+    </style>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <!--
+      original: 
+        - https://developer.mozilla.org/ja/docs/Games/Workflows/2D_Breakout_game_pure_JavaScript
+        - https://github.com/end3r/Gamedev-Canvas-workshop/blob/gh-pages/lesson10.html
+    -->
+</head>
+<body>
+
+<canvas id="myCanvas" width="960" height="640"></canvas>
+
+      <a class="twitter-share-button"
+        href="https://twitter.com/intent/tweet"
+        data-size="large">
+          Tweet
+      </a>
+
+<script>
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+    var centerX = (canvas.width/2)-64;
+    var centerY = (canvas.height/2)-64;
+    var rightPressed = false;
+    var centerPressed = false;
+    var leftPressed = false
+
+    document.addEventListener("mousedown", mouseDownHandler, false);
+    document.addEventListener("mouseup", mouseUpHandler, false);
+
+    function mouseDownHandler(e) {
+        switch(e.which){
+          case 1:
+            leftPressed = true;
+            break;
+          case 2:
+            centerPressed = true;
+            break;
+          case 3:
+            rightPressed = true;
+            break;
+        }
+    }
+    function mouseUpHandler(e) {
+        switch(e.which){
+          case 1:
+            leftPressed = false;
+            break;
+          case 2:
+            centerPressed = false;
+            break;
+          case 3:
+            rightPressed = true;
+            break;
+        }
+    }
+
+    var ganmenx128 = new Image();
+    ganmenx128.src = "ganmenx128.png";
+    function drawSuperCrazyUp() {
+        ctx.drawImage(ganmenx128, 0, 0, 128, 128, centerX, centerY, 128, 128)
+    }
+    function drawSuperCrazyDown() {
+        ctx.drawImage(ganmenx128, 0, 0, 128, 128, centerX+32, centerY+32, 64, 54)
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if(leftPressed){
+            drawSuperCrazyDown();
+        }else{
+            drawSuperCrazyUp();
+        }
+        requestAnimationFrame(draw);
+    }
+
+    draw();
+</script>
+
+</body>
+</html>
