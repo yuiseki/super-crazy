@@ -32,13 +32,13 @@
 <script>
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
-    var ballRadius = 10;
+    var ballRadius = 128;
     var x = canvas.width/2;
-    var y = canvas.height-30;
+    var y = canvas.height-(ballRadius*2);
     var dx = 9;
     var dy = -9;
-    var paddleHeight = 10;
-    var paddleWidth = 75;
+    var paddleHeight = 64;
+    var paddleWidth = 216;
     var paddleX = (canvas.width-paddleWidth)/2;
     var rightPressed = false;
     var leftPressed = false;
@@ -105,17 +105,15 @@
         }
     }
 
-    var ganmenx32 = new Image();
-    ganmenx32.src = "ganmenx32.png";
+    var ganmen = new Image();
+    ganmen.src = "ganmenx128.png";
     function drawBall() {
-        ctx.drawImage(ganmenx32, x, y)
+        ctx.drawImage(ganmen, x, y);
     }
+    var kabuki = new Image();
+    kabuki.src = "kabuki.png";
     function drawPaddle() {
-        ctx.beginPath();
-        ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
-        ctx.fillStyle = "#0095DD";
-        ctx.fill();
-        ctx.closePath();
+        ctx.drawImage(kabuki, paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
     }
     var yuriko = new Image();
     yuriko.src = "yuriko.jpg";
@@ -170,7 +168,7 @@
                 }
                 else {
                     x = canvas.width/2;
-                    y = canvas.height-30;
+                    y = canvas.height-(ballRadius*2);
                     dx = 9;
                     dy = -9;
                     paddleX = (canvas.width-paddleWidth)/2;
