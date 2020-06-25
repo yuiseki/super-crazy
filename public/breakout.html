@@ -2,12 +2,32 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>スーパークレイジー君 崩し</title>
-    <style>* { padding: 0; margin: 0; } canvas { background: #eee; display: block; margin: 0 auto; }</style>
+    <title>スーパークレイジー君 百合子崩し</title>
+    <style>
+    * { padding: 0; margin: 0; }
+    canvas { background: #eee; display: block; margin: 0 auto; }
+    .twitter-share-button {
+        transform: scale(3, 3);
+        margin-top: 200px;
+        margin-left: 49%;
+    }
+    </style>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <!--
+      original: 
+        - https://developer.mozilla.org/ja/docs/Games/Workflows/2D_Breakout_game_pure_JavaScript
+        - https://github.com/end3r/Gamedev-Canvas-workshop/blob/gh-pages/lesson10.html
+    -->
 </head>
 <body>
 
 <canvas id="myCanvas" width="480" height="320"></canvas>
+
+      <a class="twitter-share-button"
+        href="https://twitter.com/intent/tweet"
+        data-size="large">
+          Tweet
+      </a>
 
 <script>
     var canvas = document.getElementById("myCanvas");
@@ -22,10 +42,10 @@
     var paddleX = (canvas.width-paddleWidth)/2;
     var rightPressed = false;
     var leftPressed = false;
-    var brickRowCount = 5;
-    var brickColumnCount = 3;
-    var brickWidth = 75;
-    var brickHeight = 20;
+    var brickRowCount = 8;
+    var brickColumnCount = 2;
+    var brickWidth = 45;
+    var brickHeight = 75;
     var brickPadding = 10;
     var brickOffsetTop = 30;
     var brickOffsetLeft = 30;
@@ -102,6 +122,8 @@
         ctx.fill();
         ctx.closePath();
     }
+    var yuriko = new Image();
+    yuriko.src = "yuriko.jpg";
     function drawBricks() {
         for(var c=0; c<brickColumnCount; c++) {
             for(var r=0; r<brickRowCount; r++) {
@@ -110,11 +132,12 @@
                     var brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
                     bricks[c][r].x = brickX;
                     bricks[c][r].y = brickY;
-                    ctx.beginPath();
-                    ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                    ctx.fillStyle = "#0095DD";
-                    ctx.fill();
-                    ctx.closePath();
+                    ctx.drawImage(yuriko, brickX, brickY, brickWidth, brickHeight)
+                    //ctx.beginPath();
+                    //ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                    //ctx.fillStyle = "#0095DD";
+                    //ctx.fill();
+                    //ctx.closePath();
                 }
             }
         }
