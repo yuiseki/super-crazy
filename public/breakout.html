@@ -21,7 +21,7 @@
 </head>
 <body>
 
-<canvas id="myCanvas" width="480" height="320"></canvas>
+<canvas id="myCanvas" width="960" height="640"></canvas>
 
       <a class="twitter-share-button"
         href="https://twitter.com/intent/tweet"
@@ -42,8 +42,8 @@
     var paddleX = (canvas.width-paddleWidth)/2;
     var rightPressed = false;
     var leftPressed = false;
-    var brickRowCount = 8;
-    var brickColumnCount = 2;
+    var brickRowCount = 16;
+    var brickColumnCount = 4;
     var brickWidth = 45;
     var brickHeight = 75;
     var brickPadding = 10;
@@ -109,11 +109,6 @@
     ganmenx32.src = "ganmenx32.png";
     function drawBall() {
         ctx.drawImage(ganmenx32, x, y)
-        //ctx.beginPath();
-        //ctx.arc(x, y, ballRadius, 0, Math.PI*2);
-        //ctx.fillStyle = "#0095DD";
-        //ctx.fill();
-        //ctx.closePath();
     }
     function drawPaddle() {
         ctx.beginPath();
@@ -133,11 +128,6 @@
                     bricks[c][r].x = brickX;
                     bricks[c][r].y = brickY;
                     ctx.drawImage(yuriko, brickX, brickY, brickWidth, brickHeight)
-                    //ctx.beginPath();
-                    //ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                    //ctx.fillStyle = "#0095DD";
-                    //ctx.fill();
-                    //ctx.closePath();
                 }
             }
         }
