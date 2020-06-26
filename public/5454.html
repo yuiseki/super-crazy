@@ -42,11 +42,13 @@ var vm = new Vue({
     H: 13,
     W: 6,
     stage: [],
-    block: [],
+    // 現在操作中のblockの情報
+    block: [], // blockの向き
     blockX: 0, // blockの現在の座標
     blockY: 0,
     blockMemo: [], // x,yの順
-    blockColor: [],
+    blockColor: [], // blockの色
+
     next : [Math.floor(Math.random() * 5) + 1, Math.floor(Math.random() * 5) + 1],
     timerID: null,
     otitaFlag:false,
