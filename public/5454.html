@@ -43,9 +43,9 @@ var vm = new Vue({
     W: 6,
     stage: [],
     block: [],
-    blockX: 0,
+    blockX: 0, // blockの現在の座標
     blockY: 0,
-    blockMemo: [],
+    blockMemo: [], // x,yの順
     blockColor: [],
     next : [Math.floor(Math.random() * 5) + 1, Math.floor(Math.random() * 5) + 1],
     timerID: null,
@@ -100,6 +100,7 @@ var vm = new Vue({
       this.blockMemo.forEach(v => {
         stage[v[1]][v[0]] = 0;
       });
+
       if (rotate) {
         block = block.map(v => [v[1] * -1, v[0]]);
       }
