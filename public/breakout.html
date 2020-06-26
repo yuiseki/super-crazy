@@ -5,7 +5,7 @@
     <title>スーパークレイジー君 百合子崩し</title>
     <style>
     * { padding: 0; margin: 0; }
-    canvas { background: #eee; display: block; margin: 0 auto; }
+    canvas { background: #eee; display: block; margin: 0 auto; touch-action: none; }}
     .twitter-share-button {
         transform: scale(3, 3);
         margin-top: 200px;
@@ -63,6 +63,7 @@
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
     document.addEventListener("mousemove", mouseMoveHandler, false);
+    canvas.addEventListener("touchmove", touchMoveHandler, false);
 
     function keyDownHandler(e) {
         if(e.keyCode == 39) {
@@ -82,6 +83,13 @@
     }
     function mouseMoveHandler(e) {
         var relativeX = e.clientX - canvas.offsetLeft;
+        if(relativeX > 0 && relativeX < canvas.width) {
+            paddleX = relativeX - paddleWidth/2;
+        }
+    }
+    function touchMoveHandler(e) {
+        var t0 = e.touches[0];
+        var relativeX = t0.clientX - canvas.offsetLeft;
         if(relativeX > 0 && relativeX < canvas.width) {
             paddleX = relativeX - paddleWidth/2;
         }
