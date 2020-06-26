@@ -21,7 +21,11 @@
 </head>
 <body>
 
-<canvas id="myCanvas" width="960" height="640"></canvas>
+<h2>俺が都知事になるまで...</h2>
+
+<canvas id="myCanvas" width="1280" height="288"></canvas>
+
+<h2>秒</h2>
 
       <a class="twitter-share-button"
         href="https://twitter.com/intent/tweet"
@@ -31,8 +35,11 @@
 
 <script>
     var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
     var ganmen = new Image();
-    ganmen.src = "ganmenx128.png";
+    ganmen.src = "ganmenx32.png";
+    var const_width = 32;
+    var const_height = 32;
     var countDownDate = new Date("Jul 5, 2020 20:00:00").getTime();
     var ato = 0;
     var x = setInterval(function() {
@@ -156,12 +163,32 @@
         [1,0,0,0,1],
         [0,1,1,1,0],
       ],
-    } 
+    }
+
+    console.log(panels["3"][2])
 
     var draw = function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         ato_s = new String(ato);
-        console.log(ato_s);
+        var base_x = 0;
 
+        for(var i = 0; i < ato_s.length; i++) {
+            var panel = panels[ato_s[i]];
+            var x = base_x;
+            var y = 0;
+            for (j = 0; j < panel.length; j++) {
+                var parts = panel[j];
+                for (k = 0; k < parts.length; k++) {
+                    if (parts[k] == 1) {
+                        ctx.drawImage(ganmen, x, y)
+                    }
+                    x += const_width;
+                }
+                y += const_height;
+                x = base_x;
+            }
+            base_x = base_x + const_width * 6;
+        }
         requestAnimationFrame(draw);
     }
     draw();
