@@ -3,13 +3,25 @@
 <head>
     <meta charset="utf-8" />
     <title>スーパークレイジー君 クリッカー</title>
+
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/7.15.4/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/7.15.4/firebase-auth.js"></script>
+    <script defer src="/__/firebase/7.15.4/firebase-firestore.js"></script>
+    <script defer src="/__/firebase/7.15.4/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/7.15.4/firebase-storage.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+
     <style>
     * { padding: 0; margin: 0; }
     canvas { display: block; margin: 0 auto; }
+    body { text-align: center; }
+    h1 { margin: 100px auto; }
     .twitter-share-button {
         transform: scale(3, 3);
         margin-top: 200px;
-        margin-left: 49%;
     }
     </style>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
@@ -17,6 +29,8 @@
 
 </head>
 <body>
+
+<h1><span id="count"></span>スーパークレイジー君</h1>
 
 <canvas id="myCanvas" width="960" height="640"></canvas>
 
@@ -78,7 +92,16 @@
       setInterval(() => {
         top = top + 1;
         $(img).animate({top: top+"%"}, 100);
+        if(top>100){
+          $(img).remove();
+        }
       }, 100);
+      if(firebase.firestore){
+        var increment = firebase.firestore.FieldValue.increment(1);
+        var db = firebase.firestore();
+        var counter = db.collection('clicker').doc('all');
+        counter.update({ count: increment })
+      }
     };
 
     var ganmenx128 = new Image();
@@ -101,6 +124,47 @@
     }
 
     draw();
+
+    $(document).ready(function () {
+      // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+      // // The Firebase SDK is initialized and available here!
+      //
+      // firebase.auth().onAuthStateChanged(user => { });
+      // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
+      // firebase.messaging().requestPermission().then(() => { });
+      // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
+      //
+      // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+
+      try {
+        let app = firebase.app();
+        let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
+
+        firebase.auth().signInAnonymously().catch(function(error) {
+          var errorCode = error.code;
+          console.log(errorCode);
+          var errorMessage = error.message;
+          console.log(errorMessage);
+        });
+
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+            var isAnonymous = user.isAnonymous;
+            var uid = user.uid;
+          }
+        });
+
+        var db = firebase.firestore();
+        var counter = db.collection('clicker').doc('all').onSnapshot(function(doc){
+          console.log("Current data: ", doc.data());
+          var dom = document.getElementById('count');
+          dom.innerHTML = doc.data()["count"];
+        })
+
+      } catch (e) {
+        console.error(e);
+      }
+    });
 </script>
 
 </body>
