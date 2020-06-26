@@ -6,6 +6,10 @@
 - npm i -g firebase-tools
 - firebase login
 
+- cd functions
+- npm install
+- npm run build
+
 # ローカル開発環境の起動
 - firebase serve
 
