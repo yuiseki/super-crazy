@@ -102,7 +102,7 @@ var vm = new Vue({
       });
 
       if (rotate) {
-        block = block.map(v => [v[1] * -1, v[0]]); // ([[0, 0], [0, -1]]) => {return [[0, 1],[0, 0]}
+        this.rotateBlock(block)
       }
       var flag = block.every(v => {
         var x = v[0] + this.blockX + dx;
@@ -111,13 +111,16 @@ var vm = new Vue({
       });
       return flag;
     },
+    rotateBlock: function (block) {
+      return block = block.map(v => [v[1] * -1, v[0]]); // ([[0, 0], [0, -1]]) => {return [[0, 1],[0, 0]}
+    },
     drawFn: function (rotate, dx, dy) {
       this.blockMemo.forEach(v => {
         this.stage[v[1]][v[0]] = 0;
       });
       this.blockMemo = [];
       if (rotate) {
-        this.block = this.block.map(v => [v[1] * -1, v[0]]);
+        this.rotateBlock(this.block)
       }
       this.blockX += dx;
       this.blockY += dy;
