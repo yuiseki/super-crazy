@@ -14,4 +14,4 @@
 - firebase serve
 
 # 本番環境へのデプロイ
-- firebase deploy
+- firebase deploy --only hosting
