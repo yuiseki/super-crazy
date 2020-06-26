@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>スーパークレイジー君 百合子崩し</title>
+    <style>
+    * { padding: 0; margin: 0; }
+    canvas { background: #eee; display: block; margin: 0 auto; }
+    .twitter-share-button {
+        transform: scale(3, 3);
+        margin-top: 200px;
+        margin-left: 49%;
+    }
+    </style>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <!--
+      original: 
+        - https://developer.mozilla.org/ja/docs/Games/Workflows/2D_Breakout_game_pure_JavaScript
+        - https://github.com/end3r/Gamedev-Canvas-workshop/blob/gh-pages/lesson10.html
+    -->
+</head>
+<body>
+
+<canvas id="myCanvas" width="960" height="640"></canvas>
+
+      <a class="twitter-share-button"
+        href="https://twitter.com/intent/tweet"
+        data-size="large">
+          Tweet
+      </a>
+
+<script>
+    var canvas = document.getElementById("myCanvas");
+    var ganmen = new Image();
+    ganmen.src = "ganmenx128.png";
+    var countDownDate = new Date("Jul 5, 2020 20:00:00").getTime();
+    var ato = 0;
+    var x = setInterval(function() {
+        var now = new Date().getTime();
+        var distance = countDownDate - now;
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        ato = days * 3600 * 24 + hours * 3600 + minutes * 60 + seconds;
+    }, 1000)
+
+    var panels = {
+      "1": [
+        [0,0,0,0,0],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,0],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,0],
+      ],
+      "2": [
+        [0,1,1,1,0],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,1,1,1,0],
+        [1,0,0,0,0],
+        [1,0,0,0,0],
+        [1,0,0,0,0],
+        [0,1,1,1,0],
+      ],
+      "3": [
+        [0,1,1,1,0],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,1,1,1,0],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,1,1,1,0],
+      ],
+      "4": [
+        [0,0,0,0,0],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [0,1,1,1,0],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,0],
+      ],
+      "5": [
+        [0,1,1,1,0],
+        [1,0,0,0,0],
+        [1,0,0,0,0],
+        [1,0,0,0,0],
+        [0,1,1,1,0],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,1,1,1,0],
+      ],
+      "6": [
+        [0,1,1,1,0],
+        [1,0,0,0,0],
+        [1,0,0,0,0],
+        [1,0,0,0,0],
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [0,1,1,1,0],
+      ],
+      "7": [
+        [0,1,1,1,0],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,0],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,0],
+      ],
+      "8": [
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [0,1,1,1,0],
+      ],
+      "9": [
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [0,1,1,1,0],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,1,1,1,0],
+      ],
+      "0": [
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [0,0,0,0,0],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [0,1,1,1,0],
+      ],
+    } 
+
+    var draw = function() {
+        ato_s = new String(ato);
+        console.log(ato_s);
+
+        requestAnimationFrame(draw);
+    }
+    draw();
+</script>
+</body>
+</html>
