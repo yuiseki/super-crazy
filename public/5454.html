@@ -2,18 +2,23 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<title>5454
-</title>
+<title>スーパークレイジー君 5454</title>
 <style>
    table {background-color:gray;}
-   td {width: 30px;height: 30px;border-radius: 15px;}
+   td {width: 128px;height: 128px;border-radius: 64px;}
    .box{display: flex;}
 </style>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.7/vue.min.js"></script>
 </head>
 <body>
 <div id="app">
-   <h3></h3>
+   <h3>スーパークレイジー君 5454</h3>
+   <a class="twitter-share-button"
+      href="https://twitter.com/intent/tweet"
+      data-size="large">
+      Tweet
+   </a>
    <p>キーボードの矢印キーとスペースキーで操作します</p>
    <input type="button" @click="startFn" value="START" v-if="!gameStart">
    <input type="button" @click="restartFn" value="RESTART"  v-if="gameOver">
@@ -47,7 +52,7 @@ var vm = new Vue({
       otitaFlag:false,
       gameStart: false,
       gameOver: false,
-      images: ['url(00_gray.png)', 'url(01_orange_32.png)', 'url(02_green_32.png)', 'url(03_blue_32.png)', 'url(04_purple_32.png)', 'url(05_red_32.png)'],
+      images: ['url(00_gray.png)', 'url(01_orange_128.png)', 'url(02_green_128.png)', 'url(03_blue_128.png)', 'url(04_purple_128.png)', 'url(05_red_128.png)'],
       saveData : null,
    },
    methods: {
