@@ -82,7 +82,7 @@ var vm = new Vue({
       this.drawFn(false, 0, 0);
     },
     fallFn: function () {
-      if (this.isMoveFn(false, 0, 1)) {
+      if (this.canMoveTo(false, 0, 1)) {
         this.drawFn(false, 0, 1);
       } else {
         // 下まで落ちてきたならば、ぷよが消えるか確認
@@ -91,7 +91,7 @@ var vm = new Vue({
         this.timerID = setInterval(this.rensaFn, 200);
         }
     },
-    isMoveFn: function (rotate, dx, dy) {
+    canMoveTo: function (rotate, dx, dy) {
       // 仮の盤面stageを新たに作る
       var stage = this.stage.map(v => v.slice());
 
@@ -217,7 +217,7 @@ var vm = new Vue({
       return flag;
     },
     keydownFn: function (rotate, dx, dy) {
-      if (!this.gameOver && !this.otitaFlag && this.isMoveFn(rotate, dx, dy)) {
+      if (!this.gameOver && !this.otitaFlag && this.canMoveTo(rotate, dx, dy)) {
         this.drawFn(rotate, dx, dy);
       }
     },
