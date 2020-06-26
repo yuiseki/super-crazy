@@ -85,7 +85,7 @@ var vm = new Vue({
       if (this.canMoveTo(false, 0, 1)) {
         this.drawFn(false, 0, 1);
       } else {
-        // 下まで落ちてきたならば、ぷよが消えるか確認
+        // 下まで落ちてきたならば、blockが消えるか確認
         this.otitaFlag = true;
         clearInterval(this.timerID);
         this.timerID = setInterval(this.rensaFn, 200);
