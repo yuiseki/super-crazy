@@ -56,40 +56,53 @@ var vm = new Vue({
     saveData : null,
   },
   methods: {
-    startFn: function() {
-        this.saveData = JSON.stringify(this.$data);
-        for (var i = 0; i < this.H; i++) {
-          this.yx[i] = [];
-          for (var j = 0; j < this.W; j++) this.yx[i][j] = 0;
+    startFn: function () {
+      this.saveData = JSON.stringify(this.$data);
+      // 縦横i*jのstageを作成（左上がyx[0][0]）
+      for (var i = 0; i < this.H; i++) {
+        this.yx[i] = [];
+        for (var j = 0; j < this.W; j++) {
+          this.yx[i][j] = 0;
         }
-        this.gameStart = true;
-        this.createFn();
-        this.timerID = setInterval(this.fallFn, 500);
-      },
-    createFn: function() {
+      }
+
+      this.gameStart = true;
+      this.createFn();
+      this.timerID = setInterval(this.fallFn, 500);
+    },
+    // 操作するblockのセットを作る
+    createFn: function () {
       this.blockMemo = [];
       this.blockX = 2;
       this.blockY = 1;
       this.block = [[0, 0], [0, -1]];
+      // 5面サイコロを二回振って出たそれぞれの色をblockColorに格納
       this.blockColor = [this.next[1], this.next[0]];
       this.next = [Math.floor(Math.random() * 5) + 1, Math.floor(Math.random() * 5) + 1];
       this.drawFn(false, 0, 0);
     },
-    fallFn: function() {
-      if (this.isMoveFn(false, 0, 1)) this.drawFn(false, 0, 1);
-      else {
+    fallFn: function () {
+      if (this.isMoveFn(false, 0, 1)) {
+        this.drawFn(false, 0, 1);
+      } else {
+        // 下まで落ちてきたならば、ぷよが消えるか確認
         this.otitaFlag = true;
         clearInterval(this.timerID);
         this.timerID = setInterval(this.rensaFn, 200);
         }
     },
-    isMoveFn: function(rotate, dx, dy) {
+    isMoveFn: function (rotate, dx, dy) {
+      // 仮の盤面yxを新たに作る
       var yx = this.yx.map(v => v.slice());
+
       var block = this.block.map(v => v.slice());
+
       this.blockMemo.forEach(v => {
         yx[v[1]][v[0]] = 0;
       });
-      if (rotate) block = block.map(v => [v[1] * -1, v[0]]);
+      if (rotate) {
+        block = block.map(v => [v[1] * -1, v[0]]);
+      }
       var flag = block.every(v => {
         var x = v[0] + this.blockX + dx;
         var y = v[1] + this.blockY + dy;
@@ -97,77 +110,114 @@ var vm = new Vue({
       });
       return flag;
     },
-    drawFn: function(rotate, dx, dy) {
+    drawFn: function (rotate, dx, dy) {
       this.blockMemo.forEach(v => {
         this.yx[v[1]][v[0]] = 0;
       });
       this.blockMemo = [];
-      if (rotate) this.block = this.block.map(v => [v[1] * -1, v[0]]);
+      if (rotate) {
+        this.block = this.block.map(v => [v[1] * -1, v[0]]);
+      }
       this.blockX += dx;
       this.blockY += dy;
       this.block.forEach((v, i) => {
         var x = v[0] + this.blockX;
         var y = v[1] + this.blockY;
-        if (this.yx[y][x] != 0) this.gameOver = true;
+        if (this.yx[y][x] != 0) {
+          this.gameOver = true;
+        }
         this.yx[y][x] = this.blockColor[i];
         this.blockMemo.push([x, y]);
       });
-      if (this.gameOver) clearInterval(this.timerID);
+      if (this.gameOver) {
+        clearInterval(this.timerID);
+      }
       this.$forceUpdate();
     },
-    rensaFn:function(){
-      if (this.kuzureruFn() || this.removeFn()) this.$forceUpdate();
-      else {
-          clearInterval(this.timerID);
-          this.timerID = setInterval(this.fallFn, 500);
-          this.createFn();
-          this.otitaFlag = false;
+    rensaFn: function () {
+      // blockが下まで落ちて何かあるとき
+      if (this.kuzureruFn() || this.removeFn()){
+        // 強制的に再描画させる
+        this.$forceUpdate();
+
+      // blockが下まで落ち切ってなにも起きなかったとき
+      } else {
+        // 500ミリ秒待って新しいblockを落とす
+        clearInterval(this.timerID);
+        this.timerID = setInterval(this.fallFn, 500);
+        this.createFn();
+
+        this.otitaFlag = false;
         }
     },
-    kuzureruFn: function() {
+    kuzureruFn: function () {
+      // 下にあるblockが壊れている場合は下の行から順にその一つ上の行のblockを上書きしていく
+      // 移動させたらflagをtrueにして返す
       var flag= false;
-          for (var i = this.H - 2; i >= 0; i--) for (var j = 0; j < this.W; j++) {
+        for (var i = this.H - 2; i >= 0; i--) {
+          for (var j = 0; j < this.W; j++) {
             if (this.yx[i + 1][j] == 0 && this.yx[i][j] != 0) {
-                this.yx[i + 1][j] = this.yx[i][j];
-                this.yx[i][j] = 0;
-                flag = true;
+              //ある場所にblockがなく、その上にはある場合は一つ下に移動させる
+              this.yx[i + 1][j] = this.yx[i][j];
+              this.yx[i][j] = 0;
+              flag = true;
             }
           }
+        }
       return flag;
     },
-    removeFn: function() {
+    removeFn: function () {
+      // 隣り合うblockの色を確認する
+      // 4つ以上同じ色が並んだ場合はblockを消して、flagをtrueにして返す
       var flag = false;
       var dydx = [[-1, 0], [0, 1], [1, 0], [0, -1]];
-      for (var i = 0; i < this.H; i++) for (var j = 0; j < this.W; j++) {
-        var iro = this.yx[i][j];
-        if (iro == 0) continue;
-        var yx = this.yx.map(v => v.slice());
-        yx[i][j] = 0;
-        var onazi = 1;
-        var memo = [[i, j]];
-        while (memo.length != 0) {
-          var m = memo.shift();
-          dydx.forEach(v => {
-            var y = m[0] + v[0];
-            var x = m[1] + v[1];
-            if (y >= 0 && y < this.H && x >= 0 && x < this.W && yx[y][x] == iro) {
-              onazi++;
-              memo.push([y, x]);
-              yx[y][x] = 0;
-            }
-          });
-        }
-        if (onazi >= 4) {
-          flag = true;
-          this.yx = yx.map(v => v.slice());
+      for (var i = 0; i < this.H; i++) {
+        for (var j = 0; j < this.W; j++) {
+          var iro = this.yx[i][j];
+          
+          if (iro == 0) continue; // 色がある = blockがある 場合は以下を実行
+          // 仮の盤面yxを新たに作る
+          var yx = this.yx.map(v => v.slice());
+          // 無限ループを防ぐため、一度確認されたマスは空のマスとして扱う
+          yx[i][j] = 0;
+
+          var onazi = 1;
+          var memo = [[i, j]];
+          while (memo.length != 0) {
+            var m = memo.shift(); // m = [i,j] memo = []
+            // [i][j]の隣のblockの色を確認する
+            dydx.forEach(v => {
+              var y = m[0] + v[0];
+              var x = m[1] + v[1];
+              // 隣のマスが盤面の中
+              if (y >= 0 && y < this.H && x >= 0 && x < this.W) {
+                // かつ最初に取り出したblockと同じ色ならば
+                if (yx[y][x] == iro) {
+                  // 同じ色カウンターを+1してそのマスを原点候補の配列に追加する
+                  onazi++;
+                  memo.push([y, x]);
+
+                  // 無限ループを防ぐため、一度確認されたマスは空のマスとして扱う
+                  yx[y][x] = 0;
+                }
+              }
+            });
+          }
+          if (onazi >= 4) {
+            // 同じblockが4つ以上並んでいた場合は、空にしたマスをそのまま本物の盤面に入れる
+            flag = true;
+            this.yx = yx.map(v => v.slice());
+          }
         }
       }
       return flag;
     },
-    keydownFn: function(rotate, dx, dy) {
-      if (!this.gameOver && !this.otitaFlag && this.isMoveFn(rotate, dx, dy)) this.drawFn(rotate, dx, dy);
+    keydownFn: function (rotate, dx, dy) {
+      if (!this.gameOver && !this.otitaFlag && this.isMoveFn(rotate, dx, dy)) {
+        this.drawFn(rotate, dx, dy);
+      }
     },
-    restartFn: function() {
+    restartFn: function () {
       var obj = JSON.parse(this.saveData);
       for (var k in obj) this[k] = obj[k];
       this.startFn();
@@ -175,7 +225,7 @@ var vm = new Vue({
   }
 });
 
-document.onkeydown = function(e) {
+document.onkeydown = function (e) {
   if (e.keyCode == 32) vm.keydownFn(true, 0, 0); //space
   else if (e.keyCode == 37) vm.keydownFn(false, -1, 0); //left
   else if (e.keyCode == 40) vm.keydownFn(false, 0, 1); //down
