@@ -46,7 +46,7 @@ var vm = new Vue({
       otitaFlag:false,
       gameStart: false,
       gameOver: false,
-      images: ['url(gray.png)', 'url(ganmenx32.png)', 'url(yuriko.png)', 'url(ganmenx32.png)', 'url(ganmenx32.png)', 'url(ganmenx32.png)'],
+      images: ['url(00_gray.png)', 'url(01_orange_32.png)', 'url(02_green_32.png)', 'url(03_blue_32.png)', 'url(04_purple_32.png)', 'url(05_red_32.png)'],
       saveData : null,
    },
    methods: {
@@ -170,7 +170,7 @@ var vm = new Vue({
 });
 
 document.onkeydown = function(e) {
-   if (e.keyCode == 32) vm.keydownFn(true, 0, 0); //up
+   if (e.keyCode == 32) vm.keydownFn(true, 0, 0); //space
    else if (e.keyCode == 37) vm.keydownFn(false, -1, 0); //left
    else if (e.keyCode == 40) vm.keydownFn(false, 0, 1); //down
    else if (e.keyCode == 39) vm.keydownFn(false, 1, 0); //right
