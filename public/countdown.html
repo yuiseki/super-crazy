@@ -43,7 +43,7 @@
     canvas.width = displayWidth;
     var ctx = canvas.getContext("2d");
     var ganmen = new Image();
-    ganmen.src = "ganmenx32.png";
+    ganmen.src = "ganmenx128.png";
     var const_width = 32 * ratio;
     var const_height = 32 * ratio;
     var countDownDate = new Date("Jul 5, 2020 20:00:00").getTime();
@@ -56,7 +56,7 @@
         var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         var seconds = Math.floor((distance % (1000 * 60)) / 1000);
         ato = days * 3600 * 24 + hours * 3600 + minutes * 60 + seconds;
-    }, 1000)
+    }, 1000);
 
     var panels = {
       "1": [
@@ -169,9 +169,7 @@
         [1,0,0,0,1],
         [0,1,1,1,0],
       ],
-    }
-
-    console.log(panels["3"][2])
+    };
 
     var draw = function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -186,7 +184,7 @@
                 var parts = panel[j];
                 for (k = 0; k < parts.length; k++) {
                     if (parts[k] == 1) {
-                        ctx.drawImage(ganmen, x, y)
+                        ctx.drawImage(ganmen, x, y, const_width, const_height);
                     }
                     x += const_width;
                 }
