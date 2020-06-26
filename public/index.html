@@ -140,8 +140,8 @@
     <script>
       let ganmen = function(){
         let img = document.createElement('img');
-        let documentHeight = $(document).height();
-        let documentWidth = $(document).width();
+        let documentHeight = $(document).height() - 128;
+        let documentWidth = $(document).width() - 128;
         let top = Math.floor(Math.random() * (documentHeight));
         let left = Math.floor(Math.random() * (documentWidth));
         img.setAttribute('style', 'position: absolute;')
