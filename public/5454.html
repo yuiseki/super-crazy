@@ -44,10 +44,10 @@ var vm = new Vue({
     // 盤面の情報
     stage: [], // 0 | Colors
     // 現在操作中のblockの情報
-    block: [], // blockの向き
+    currentBlockVector: [], // blockの向き
     blockX: 0, // blockの現在の座標
     blockY: 0,
-    blockMemo: [], // x,yの順
+    prevBlockPosition: [], // x,yの順
     blockColor: [], // blockの色
 
     next : [Math.floor(Math.random() * 5) + 1, Math.floor(Math.random() * 5) + 1],
@@ -75,10 +75,10 @@ var vm = new Vue({
     },
     // 操作するblockのセットを作る
     createFn: function () {
-      this.blockMemo = [];
+      this.prevBlockPosition = [];
       this.blockX = 2;
       this.blockY = 1;
-      this.block = [[0, 0], [0, -1]];
+      this.currentBlockVector = [[0, 0], [0, -1]];
       // 5面サイコロを二回振って出たそれぞれの色をblockColorに格納
       this.blockColor = [this.next[1], this.next[0]];
       // 次の分をふっておく
@@ -100,43 +100,43 @@ var vm = new Vue({
       // 仮の盤面stageを新たに作る
       var stage = this.stage.map(v => v.slice());
 
-      var block = this.block.map(v => v.slice());
+      var currentBlockVector = this.currentBlockVector.map(v => v.slice());
 
-      this.blockMemo.forEach(v => {
+      this.prevBlockPosition.forEach(v => {
         stage[v[1]][v[0]] = 0;
       });
 
       if (rotate) {
         this.rotateBlock(block)
       }
-      var flag = block.every(v => {
+      var flag = currentBlockVector.every(v => {
         var x = v[0] + this.blockX + dx;
         var y = v[1] + this.blockY + dy;
         return (this.isInsideStage(y,x) && stage[y][x] == 0);
       });
       return flag;
     },
-    rotateBlock: function (block) {
-      return block = block.map(v => [v[1] * -1, v[0]]); // ([[0, 0], [0, -1]]) => {return [[0, 1],[0, 0]}
+    rotateBlock: function (currentBlockVector) {
+      return currentBlockVector = currentBlockVector.map(v => [v[1] * -1, v[0]]); // ([[0, 0], [0, -1]]) => {return [[0, 1],[0, 0]}
     },
     drawFn: function (rotate, dx, dy) {
-      this.blockMemo.forEach(v => {
+      this.prevBlockPosition.forEach(v => {
         this.stage[v[1]][v[0]] = 0;
       });
-      this.blockMemo = [];
+      this.prevBlockPosition = [];
       if (rotate) {
         this.rotateBlock(this.block)
       }
       this.blockX += dx;
       this.blockY += dy;
-      this.block.forEach((v, i) => {
+      this.currentBlockVector.forEach((v, i) => {
         var x = v[0] + this.blockX;
         var y = v[1] + this.blockY;
         if (this.stage[y][x] != 0) {
           this.gameOver = true;
         }
         this.stage[y][x] = this.blockColor[i];
-        this.blockMemo.push([x, y]);
+        this.prevBlockPosition.push([x, y]);
       });
       if (this.gameOver) {
         clearInterval(this.timerID);
