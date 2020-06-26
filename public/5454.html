@@ -107,7 +107,7 @@ var vm = new Vue({
       });
 
       if (rotate) {
-        this.rotateBlock(block)
+        currentBlockVector = this.rotateBlock(currentBlockVector)
       }
       var flag = currentBlockVector.every(v => {
         var x = v[0] + this.blockX + dx;
@@ -125,7 +125,7 @@ var vm = new Vue({
       });
       this.prevBlockPosition = [];
       if (rotate) {
-        this.rotateBlock(this.block)
+        this.currentBlockVector = this.rotateBlock(this.currentBlockVector)
       }
       this.blockX += dx;
       this.blockY += dy;
