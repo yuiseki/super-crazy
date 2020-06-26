@@ -106,7 +106,7 @@ var vm = new Vue({
       var flag = block.every(v => {
         var x = v[0] + this.blockX + dx;
         var y = v[1] + this.blockY + dy;
-        return (y >= 0 && y < this.H && x >= 0 && x < this.W && stage[y][x] == 0);
+        return (this.isInsideStage() && stage[y][x] == 0);
       });
       return flag;
     },
@@ -133,6 +133,9 @@ var vm = new Vue({
         clearInterval(this.timerID);
       }
       this.$forceUpdate();
+    },
+    isInsideStage: function (y,x) {
+      return y >= 0 && y < this.H && x >= 0 && x < this.W
     },
     rensaFn: function () {
       // blockが下まで落ちて何かあるとき
@@ -189,9 +192,9 @@ var vm = new Vue({
             dydx.forEach(v => {
               var y = m[0] + v[0];
               var x = m[1] + v[1];
-              // 隣のマスが盤面の中
-              if (y >= 0 && y < this.H && x >= 0 && x < this.W) {
-                // かつ最初に取り出したblockと同じ色ならば
+
+              if (this.isInsideStage()) {
+                // 最初に取り出したblockと同じ色ならば
                 if (stage[y][x] == iro) {
                   // 同じ色カウンターを+1してそのマスを原点候補の配列に追加する
                   onazi++;
