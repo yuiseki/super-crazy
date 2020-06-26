@@ -20,8 +20,8 @@
     Tweet
   </a>
   <p>キーボードの矢印キーとスペースキーで操作します</p>
-  <input type="button" @click="startFn" value="START" v-if="!gameStart">
-  <input type="button" @click="restartFn" value="RESTART"  v-if="gameOver">
+  <input type="button" @click="startGame" value="START" v-if="!gameStart">
+  <input type="button" @click="restartGame" value="RESTART"  v-if="gameOver">
   <div class="box" v-if="gameStart">
     <table>
           <tr v-for="i in H">
@@ -59,7 +59,7 @@ var vm = new Vue({
     saveData : null,
   },
   methods: {
-    startFn: function () {
+    startGame: function () {
       this.saveData = JSON.stringify(this.$data);
       // 縦横i*jのstageを作成（左上がstage[0][0]）
       for (var i = 0; i < this.H; i++) {
@@ -70,11 +70,11 @@ var vm = new Vue({
       }
 
       this.gameStart = true;
-      this.createFn();
-      this.timerID = setInterval(this.fallFn, 500);
+      this.createBlock();
+      this.timerID = setInterval(this.freeFall, 500);
     },
     // 操作するblockのセットを作る
-    createFn: function () {
+    createBlock: function () {
       this.prevBlockPosition = [];
       this.blockX = 2;
       this.blockY = 1;
@@ -84,17 +84,17 @@ var vm = new Vue({
       // 次の分をふっておく
       this.next = [Math.floor(Math.random() * 5) + 1, Math.floor(Math.random() * 5) + 1];
 
-      this.drawFn(false, 0, 0);
+      this.moveBlock(false, 0, 0);
     },
-    fallFn: function () {
+    freeFall: function () {
       if (this.canMoveTo(false, 0, 1)) {
-        this.drawFn(false, 0, 1);
+        this.moveBlock(false, 0, 1);
       } else {
         // 下まで落ちてきたならば、blockが消えるか確認
         this.otitaFlag = true;
         clearInterval(this.timerID);
-        this.timerID = setInterval(this.rensaFn, 200);
-        }
+        this.timerID = setInterval(this.checkBlocksState, 200);
+      }
     },
     canMoveTo: function (rotate, dx, dy) {
       // 仮の盤面stageを新たに作る
@@ -119,7 +119,7 @@ var vm = new Vue({
     rotateBlock: function (currentBlockVector) {
       return currentBlockVector = currentBlockVector.map(v => [v[1] * -1, v[0]]); // ([[0, 0], [0, -1]]) => {return [[0, 1],[0, 0]}
     },
-    drawFn: function (rotate, dx, dy) {
+    moveBlock: function (rotate, dx, dy) {
       this.prevBlockPosition.forEach(v => {
         this.stage[v[1]][v[0]] = 0;
       });
@@ -146,9 +146,9 @@ var vm = new Vue({
     isInsideStage: function (y,x) {
       return y >= 0 && y < this.H && x >= 0 && x < this.W
     },
-    rensaFn: function () {
+    checkBlocksState: function () {
       // blockが下まで落ちて何かあるとき
-      if (this.kuzureruFn() || this.removeFn()){
+      if (this.fillEmptySpace() || this.removeBlock()){
         // 強制的に再描画させる
         this.$forceUpdate();
 
@@ -156,13 +156,13 @@ var vm = new Vue({
       } else {
         // 500ミリ秒待って新しいblockを落とす
         clearInterval(this.timerID);
-        this.timerID = setInterval(this.fallFn, 500);
-        this.createFn();
+        this.timerID = setInterval(this.freeFall, 500);
+        this.createBlock();
 
         this.otitaFlag = false;
         }
     },
-    kuzureruFn: function () {
+    fillEmptySpace: function () {
       // 下にあるblockが壊れている場合は下の行から順にその一つ上の行のblockを上書きしていく
       // 移動させたらflagをtrueにして返す
       var flag= false;
@@ -178,7 +178,7 @@ var vm = new Vue({
         }
       return flag;
     },
-    removeFn: function () {
+    removeBlock: function () {
       // 隣り合うblockの色を確認する
       // 4つ以上同じ色が並んだ場合はblockを消して、flagをtrueにして返す
       var flag = false;
@@ -226,13 +226,13 @@ var vm = new Vue({
     },
     keydownFn: function (rotate, dx, dy) {
       if (!this.gameOver && !this.otitaFlag && this.canMoveTo(rotate, dx, dy)) {
-        this.drawFn(rotate, dx, dy);
+        this.moveBlock(rotate, dx, dy);
       }
     },
-    restartFn: function () {
+    restartGame: function () {
       var obj = JSON.parse(this.saveData);
       for (var k in obj) this[k] = obj[k];
-      this.startFn();
+      this.startGame();
     },
   }
 });
