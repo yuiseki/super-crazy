@@ -41,7 +41,8 @@ var vm = new Vue({
   data: {
     H: 13,
     W: 6,
-    stage: [],
+    // 盤面の情報
+    stage: [], // 0 | Colors
     // 現在操作中のblockの情報
     block: [], // blockの向き
     blockX: 0, // blockの現在の座標
@@ -80,7 +81,9 @@ var vm = new Vue({
       this.block = [[0, 0], [0, -1]];
       // 5面サイコロを二回振って出たそれぞれの色をblockColorに格納
       this.blockColor = [this.next[1], this.next[0]];
+      // 次の分をふっておく
       this.next = [Math.floor(Math.random() * 5) + 1, Math.floor(Math.random() * 5) + 1];
+
       this.drawFn(false, 0, 0);
     },
     fallFn: function () {
