@@ -83,41 +83,18 @@ var vm = new Vue({
       this.blockColor = [this.next[1], this.next[0]];
       // 次の分をふっておく
       this.next = [Math.floor(Math.random() * 5) + 1, Math.floor(Math.random() * 5) + 1];
-
+      // blockを初期位置に移動
       this.moveBlock(false, 0, 0);
     },
     freeFall: function () {
       if (this.canMoveTo(false, 0, 1)) {
         this.moveBlock(false, 0, 1);
       } else {
-        // 下まで落ちてきたならば、blockが消えるか確認
+        // blockを操作できないところまで落ちてきたならば、blockが消えるか確認
         this.otitaFlag = true;
         clearInterval(this.timerID);
         this.timerID = setInterval(this.checkBlocksState, 200);
       }
-    },
-    canMoveTo: function (rotate, dx, dy) {
-      // 仮の盤面stageを新たに作る
-      var stage = this.stage.map(v => v.slice());
-
-      var currentBlockVector = this.currentBlockVector.map(v => v.slice());
-
-      this.prevBlockPosition.forEach(v => {
-        stage[v[1]][v[0]] = 0;
-      });
-
-      if (rotate) {
-        currentBlockVector = this.rotateBlock(currentBlockVector)
-      }
-      var flag = currentBlockVector.every(v => {
-        var x = v[0] + this.blockX + dx;
-        var y = v[1] + this.blockY + dy;
-        return (this.isInsideStage(y,x) && stage[y][x] == 0);
-      });
-      return flag;
-    },
-    rotateBlock: function (currentBlockVector) {
-      return currentBlockVector = currentBlockVector.map(v => [v[1] * -1, v[0]]); // ([[0, 0], [0, -1]]) => {return [[0, 1],[0, 0]}
     },
     moveBlock: function (rotate, dx, dy) {
       this.prevBlockPosition.forEach(v => {
@@ -143,9 +120,6 @@ var vm = new Vue({
       }
       this.$forceUpdate();
     },
-    isInsideStage: function (y,x) {
-      return y >= 0 && y < this.H && x >= 0 && x < this.W
-    },
     checkBlocksState: function () {
       // blockが下まで落ちて何かあるとき
       if (this.fillEmptySpace() || this.removeBlock()){
@@ -160,7 +134,7 @@ var vm = new Vue({
         this.createBlock();
 
         this.otitaFlag = false;
-        }
+      }
     },
     fillEmptySpace: function () {
       // 下にあるblockが壊れている場合は下の行から順にその一つ上の行のblockを上書きしていく
@@ -224,6 +198,36 @@ var vm = new Vue({
       }
       return flag;
     },
+
+    rotateBlock: function (currentBlockVector) {
+      return currentBlockVector = currentBlockVector.map(v => [v[1] * -1, v[0]]); // ([[0, 0], [0, -1]]) => {return [[0, 1],[0, 0]}
+    },
+
+    canMoveTo: function (rotate, dx, dy) {
+      // 仮の盤面stageを新たに作る
+      var stage = this.stage.map(v => v.slice());
+
+      var currentBlockVector = this.currentBlockVector.map(v => v.slice());
+
+      this.prevBlockPosition.forEach(v => {
+        stage[v[1]][v[0]] = 0;
+      });
+
+      if (rotate) {
+        currentBlockVector = this.rotateBlock(currentBlockVector)
+      }
+      var flag = currentBlockVector.every(v => {
+        var x = v[0] + this.blockX + dx;
+        var y = v[1] + this.blockY + dy;
+        return (this.isInsideStage(y,x) && stage[y][x] == 0);
+      });
+      return flag;
+    },
+    isInsideStage: function (y,x) {
+      return y >= 0 && y < this.H && x >= 0 && x < this.W
+    },
+    
+    
     keydownFn: function (rotate, dx, dy) {
       if (!this.gameOver && !this.otitaFlag && this.canMoveTo(rotate, dx, dy)) {
         this.moveBlock(rotate, dx, dy);
