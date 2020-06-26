@@ -170,7 +170,7 @@ var vm = new Vue({
 });
 
 document.onkeydown = function(e) {
-   if (e.keyCode == 38) vm.keydownFn(true, 0, 0); //up
+   if (e.keyCode == 32) vm.keydownFn(true, 0, 0); //up
    else if (e.keyCode == 37) vm.keydownFn(false, -1, 0); //left
    else if (e.keyCode == 40) vm.keydownFn(false, 0, 1); //down
    else if (e.keyCode == 39) vm.keydownFn(false, 1, 0); //right
