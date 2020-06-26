@@ -18,12 +18,13 @@
         - https://developer.mozilla.org/ja/docs/Games/Workflows/2D_Breakout_game_pure_JavaScript
         - https://github.com/end3r/Gamedev-Canvas-workshop/blob/gh-pages/lesson10.html
     -->
+    
 </head>
 <body>
 
 <h2>俺が都知事になるまで...</h2>
 
-<canvas id="myCanvas" width="1280" height="288"></canvas>
+<canvas id="myCanvas" width="1200" height="288"></canvas>
 
 <h2>秒</h2>
 
@@ -35,11 +36,16 @@
 
 <script>
     var canvas = document.getElementById("myCanvas");
+    var displayWidth = document.body.clientWidth;
+    var ratio = displayWidth / 1200;
+    var height = 288 * ratio;
+    canvas.height = height;
+    canvas.width = displayWidth;
     var ctx = canvas.getContext("2d");
     var ganmen = new Image();
     ganmen.src = "ganmenx32.png";
-    var const_width = 32;
-    var const_height = 32;
+    var const_width = 32 * ratio;
+    var const_height = 32 * ratio;
     var countDownDate = new Date("Jul 5, 2020 20:00:00").getTime();
     var ato = 0;
     var x = setInterval(function() {
