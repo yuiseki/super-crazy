@@ -420,7 +420,8 @@
         var increment = firebase.firestore.FieldValue.increment(Math.floor(Math.random() * (100)));
         var db = firebase.firestore();
         var counter = db.collection('clicker').doc('all');
-        counter.update({ count: increment })
+        counter.update({ count: increment });
+        firebase.analytics().logEvent('notification_received');
       }
     };
     var fallDownGanmen = function(){
@@ -478,6 +479,7 @@
     }
     draw();
 
+    /* firebase */
     $(document).ready(function () {
       setInterval(()=>{
         fallDownGanmen();
@@ -487,6 +489,7 @@
         let app = firebase.app();
         let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
 
+        firebase.analytics();
         firebase.auth().signInAnonymously().catch(function(error) {
           var errorCode = error.code;
           console.log(errorCode);
