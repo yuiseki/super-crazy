@@ -24,7 +24,6 @@
 
   <style>
     * { user-select: none; }
-    body { background-image: url(super-crazy.jpg);}
     .navbar-brand { font-size: 1em !important; }
     .container { background-color: white; }
     h1, h2, h3 { background-color: white;}
@@ -389,7 +388,6 @@
     clickerCanvas.addEventListener("touchend", mouseUpHandler, false);
 
     function mouseDownHandler(e) {
-        console.log("click")
         switch(e.which){
           case 1:
             leftPressed = true;
@@ -419,7 +417,7 @@
     };
     var incrementFirebase = function(){
       if(firebase.firestore){
-        var increment = firebase.firestore.FieldValue.increment(1);
+        var increment = firebase.firestore.FieldValue.increment(Math.floor(Math.random() * (100)));
         var db = firebase.firestore();
         var counter = db.collection('clicker').doc('all');
         counter.update({ count: increment })
