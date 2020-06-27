@@ -86,11 +86,11 @@ var vm = new Vue({
         this.gameOver = true;
       }
       // blockを初期位置に移動
-      this.moveBlock(0,0)
+      this.moveBlockTo(0,0)
     },
     freeFall: function () {
       if (this.isAdjacentEmpty(0,1)) {
-        this.moveBlock(0,1)
+        this.moveBlockTo(0,1)
       } else {
         // blockを操作できないところまで落ちてきたならば、blockが消えるか確認
         this.otitaFlag = true;
@@ -98,43 +98,33 @@ var vm = new Vue({
         this.timerID = setInterval(this.checkBlocksState, 200);
       }
     },
-    moveBlock: function (dx,dy) {
+    moveBlockTo: function (dx,dy) {
       if (this.gameOver) {
         clearInterval(this.timerID);
       }
-      const blockColor = this.blockColor
-      // stageから移動前のblockを削除
-      this.blockVector.map (
-        (v) => {
-          let x = v[0] + this.InitialXPoint
-          let y = v[1] + this.InitialYPoint
-          this.stage[y][x] = 0
+      // stageを更新
+      this.updateStage(
+        () => {
+          this.InitialXPoint += dx
+          this.InitialYPoint += dy
         }
       )
-      // blockを動かす
-      this.InitialXPoint += dx
-      this.InitialYPoint += dy
-      // blockの変更をstageに反映する
-      this.blockVector.map (
-        (v, index) => {
-          let x = v[0] + this.InitialXPoint
-          let y = v[1] + this.InitialYPoint
-          this.stage[y][x] = blockColor[index]
-        }
-      )
-      this.$forceUpdate();
-      
     },
 
     isAdjacentEmpty: function (dx,dy) {
       let stage = this.stage.map(v => v.slice())
-      
-      return this.blockVector.every(
-        v => {
+      this.blockVector.map(
+        (v) => {
           const currentXPoint = v[0] + this.InitialXPoint
           const currentYPoint = v[1] + this.InitialYPoint
           // 現在のblockがある場所は空のマス扱いする
           stage[currentYPoint][currentXPoint] = 0
+        }
+      )
+      return this.blockVector.every(
+        v => {
+          const currentXPoint = v[0] + this.InitialXPoint
+          const currentYPoint = v[1] + this.InitialYPoint
 
           let x = currentXPoint + dx
           let y = currentYPoint + dy
@@ -223,31 +213,139 @@ var vm = new Vue({
       return flag;
     },
 
-    rotateBlock: function (blockVector) {
-      return blockVector = blockVector.map(v => [v[1] * -1, v[0]]); // ([[0, 0], [0, -1]]) => {return [[0, 1],[0, 0]}
-    },
-
     isInsideStage: function (y,x) {
       return y >= 0 && y < this.H && x >= 0 && x < this.W
     },
-    
-    
-    keydownFn: function (rotate, direction) {
-      let dx = 0
-      let dy = 0
-      switch (direction) {
-        case 'left':
-          dx = -1
-          break
-        case 'right':
-          dx = 1
-          break
-        case 'down':
-          dy = 1
-          break
+
+    updateStage: function (func) {
+      // stageから移動前のblockを削除
+      this.blockVector.map (
+        (v) => {
+          let x = v[0] + this.InitialXPoint
+          let y = v[1] + this.InitialYPoint
+          this.stage[y][x] = 0
+        }
+      )
+      // なんかてきとうにblockを動かす
+      func()
+      // blockの変更をstageに反映する
+      this.blockVector.map (
+        (v, index) => {
+          let x = v[0] + this.InitialXPoint
+          let y = v[1] + this.InitialYPoint
+          this.stage[y][x] = this.blockColor[index]
+        }
+      )
+      this.$forceUpdate();
+    },
+
+    rotateBlockIfAble: function (direction) {
+      if (direction == 'clockwise') {
+        let stage = this.stage.map(v => v.slice())
+        this.blockVector.map(
+          (v) => {
+            let y = v[1] + this.InitialYPoint
+            let x = v[0] + this.InitialXPoint
+            stage[y][x] = 0
+          }
+        )
+        rotatedBlock = this.blockVector.map(v => [v[1] * -1, v[0]])
+        check = rotatedBlock.every(
+          (v) => {
+            let y = v[1] + this.InitialYPoint
+            let x = v[0] + this.InitialXPoint
+            return (this.isInsideStage(y,x) && stage[y][x] == 0)
+          }
+        )
+        if (check) {
+          this.updateStage(
+            () => {
+              this.blockVector = this.blockVector.map(v => [v[1] * -1, v[0]])
+            }
+          )
+        } else {
+          if (!this.isAdjacentEmpty(-1,0) && this.isAdjacentEmpty(1,0)) {
+            this.moveBlockTo(1,0)
+            this.updateStage(
+            () => {
+              this.blockVector = this.blockVector.map(v => [v[1] * -1, v[0]])
+            }
+            )
+          } else if (!this.isAdjacentEmpty(1,0) && this.isAdjacentEmpty(-1,0)) {
+            this.moveBlockTo(-1,0)
+            this.updateStage(
+            () => {
+              this.blockVector = this.blockVector.map(v => [v[1] * -1, v[0]])
+            }
+            )
+          }
+        }
+      } else {
+        let stage = this.stage.map(v => v.slice())
+        this.blockVector.map(
+          (v) => {
+            let y = v[1] + this.InitialYPoint
+            let x = v[0] + this.InitialXPoint
+            stage[y][x] = 0
+          }
+        )
+        rotatedBlock = this.blockVector.map(v => [v[1], v[0] * -1])
+        check = rotatedBlock.every(
+          (v) => {
+            let y = v[1] + this.InitialYPoint
+            let x = v[0] + this.InitialXPoint
+            return (this.isInsideStage(y,x) && stage[y][x] == 0)
+          }
+        )
+        if (check) {
+          this.updateStage(
+            () => {
+              this.blockVector = this.blockVector.map(v => [v[1], v[0] * -1])
+            }
+          )
+        } else {
+          if (!this.isAdjacentEmpty(-1,0) && this.isAdjacentEmpty(1,0)) {
+            this.moveBlockTo(1,0)
+            this.updateStage(
+            () => {
+              this.blockVector = this.blockVector.map(v => [v[1], v[0] * -1])
+            }
+            )
+          } else if (!this.isAdjacentEmpty(1,0) && this.isAdjacentEmpty(-1,0)) {
+            this.moveBlockTo(-1,0)
+            this.updateStage(
+            () => {
+              this.blockVector = this.blockVector.map(v => [v[1], v[0] * -1])
+            }
+            )
+          }
+        }
       }
-      if (!this.gameOver && !this.otitaFlag && this.isAdjacentEmpty(dx,dy)) {
-        this.moveBlock(dx,dy);
+    },
+    
+    keydownFn: function (type, direction) {
+      if (!this.gameOver && !this.otitaFlag) {
+        let dx = 0
+        let dy = 0
+        switch (direction) {
+          // 意図的にfall throughさせてます
+          case 'counterclockwise':
+          case 'left':
+            dx = -1
+            break
+          case 'clockwise':
+          case 'right':
+            dx = 1
+            break
+          case 'down':
+            dy = 1
+            break
+        }
+        if (type == 'rotate') {
+          this.rotateBlockIfAble(direction)
+        } else if (type == 'move' && this.isAdjacentEmpty(dx,dy)) {
+          this.moveBlockTo(dx,dy)
+        }
       }
     },
     restartGame: function () {
@@ -259,10 +357,12 @@ var vm = new Vue({
 });
 
 document.onkeydown = function (e) {
-  if (e.keyCode == 32) vm.keydownFn(true, 0, 0); //space
-  else if (e.keyCode == 37) vm.keydownFn(false, 'left'); //left
-  else if (e.keyCode == 40) vm.keydownFn(false, 'down'); //down
-  else if (e.keyCode == 39) vm.keydownFn(false, 'right'); //right
+  if (e.keyCode == (32 || 18)) vm.keydownFn('rotate', 'clockwise'); //space or alt
+  else if (e.keyCode == 37) vm.keydownFn('move', 'left'); //left
+  else if (e.keyCode == 16) vm.keydownFn('rotate', 'counterclockwise') //shift
+  else if (e.keyCode == 39) vm.keydownFn('move', 'right'); //right
+  else if (e.keyCode == 40) vm.keydownFn('move', 'down'); //down
+  
 };
 </script>
 </body>
