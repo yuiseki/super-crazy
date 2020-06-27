@@ -102,28 +102,26 @@ var vm = new Vue({
       if (this.gameOver) {
         clearInterval(this.timerID);
       }
-      if (this.isAdjacentEmpty(dx, dy)) {
-        const blockColor = this.blockColor
-        // stageから移動前のblockを削除
-        this.blockVector.map (
-          (v) => {
-            let x = v[0] + this.InitialXPoint
-            let y = v[1] + this.InitialYPoint
-            this.stage[y][x] = 0
-          }
-        )
-        // blockを動かす
-        this.InitialXPoint += dx
-        this.InitialYPoint += dy
-        // blockの変更をstageに反映する
-        this.blockVector.map (
-          (v, index) => {
-            let x = v[0] + this.InitialXPoint
-            let y = v[1] + this.InitialYPoint
-            this.stage[y][x] = blockColor[index]
-          }
-        )
-      }
+      const blockColor = this.blockColor
+      // stageから移動前のblockを削除
+      this.blockVector.map (
+        (v) => {
+          let x = v[0] + this.InitialXPoint
+          let y = v[1] + this.InitialYPoint
+          this.stage[y][x] = 0
+        }
+      )
+      // blockを動かす
+      this.InitialXPoint += dx
+      this.InitialYPoint += dy
+      // blockの変更をstageに反映する
+      this.blockVector.map (
+        (v, index) => {
+          let x = v[0] + this.InitialXPoint
+          let y = v[1] + this.InitialYPoint
+          this.stage[y][x] = blockColor[index]
+        }
+      )
       this.$forceUpdate();
       
     },
@@ -248,7 +246,7 @@ var vm = new Vue({
           dy = 1
           break
       }
-      if (!this.gameOver && !this.otitaFlag ) {
+      if (!this.gameOver && !this.otitaFlag && this.isAdjacentEmpty(dx,dy)) {
         this.moveBlock(dx,dy);
       }
     },
