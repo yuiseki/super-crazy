@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/ fb# website: http://ogp.me/ns/ website#">
-
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-
   <!-- og start -->
   <meta property="og:url" content="https://super-crazy.jp/index.html" />
   <meta property="og:type" content="website" />
@@ -19,26 +16,33 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@makoto__9999" />
   <!-- og end -->
-
-  <title>東京都知事候補者 スーパークレイジー君 西本誠 公認非公式サイト</title>
-
+  <title>スーパークレイジー君系</title>
   <style>
-    * { user-select: none; }
-    .navbar-brand { font-size: 1em !important; }
-    canvas#countdown { background: #eee; display: block; margin: 0 auto; }
+    * { margin: 0px; padding: 0px; }
+    body { width: 100%; height: 100%; }
   </style>
-
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </head>
-
 <body>
-
+<div>
+    <h1 style="display: inline;">スーパークレイジー君系</h1>
+    <a class="twitter-share-button"
+      href="https://twitter.com/intent/tweet"
+      data-size="large">
+        Tweet
+    </a>
+    <a class="twitter-follow-button"
+      href="https://twitter.com/makoto__9999"
+      data-size="large">
+      Follow @makoto__9999v
+    </a>
+</div>
 <div id="stage"></div>
 <script src="https://82mou.github.io/threejs/js/three.js"></script>
 <script src="https://82mou.github.io/threejs/js/OrbitControls.js"></script>
 <script src="https://code.createjs.com/preloadjs-0.6.2.min.js"></script>
 <script>
-window.onload = function() {
+document.body.onload = function() {
 let scene;
 let camera;
 let light;
@@ -48,8 +52,8 @@ let axisHelper;
 let lightHelper;
 let renderer;
 let loader;
-let width = document.body.clientWidth-20;
-let height = document.body.clientHeight-20;
+let width = document.documentElement.clientWidth;
+let height = document.documentElement.clientHeight-100;
 let controls;
 
 // テクスチャー
@@ -208,10 +212,12 @@ loadQueue.loadManifest(manifest);
 // 追加：点光源を作る
 light = new THREE.PointLight(0xffffff, 3, 0);
 light.position.set(0, 0, 0);
+light.color.multiplyScalar(0.3);
 scene.add(light);
 
 // 環境光を作る
-ambient = new THREE.AmbientLight(0x222222);
+ambient = new THREE.AmbientLight(0xffffff);
+ambient.color.multiplyScalar(0.6);
 scene.add(ambient);
 
 // カメラを作る
