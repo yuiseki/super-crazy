@@ -5,7 +5,7 @@
     <title>スーパークレイジー君が都知事になるまで...</title>
     <style>
     * { padding: 0; margin: 0; }
-    canvas { background: #eee; display: block; margin: 0 auto; }
+    canvas#countdown { background: #eee; display: block; margin: 0 auto; }
     .twitter-share-button {
         transform: scale(3, 3);
         margin-top: 200px;
@@ -13,18 +13,13 @@
     }
     </style>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-    <!--
-      original: 
-        - https://developer.mozilla.org/ja/docs/Games/Workflows/2D_Breakout_game_pure_JavaScript
-        - https://github.com/end3r/Gamedev-Canvas-workshop/blob/gh-pages/lesson10.html
-    -->
     
 </head>
 <body>
 
 <h2>俺が都知事になるまで...</h2>
 
-<canvas id="myCanvas" width="1200" height="312"></canvas>
+<canvas id="countdown" width="1200" height="312"></canvas>
 
 <h2>秒</h2>
 
@@ -35,7 +30,7 @@
       </a>
 
 <script>
-    var canvas = document.getElementById("myCanvas");
+    var canvas = document.getElementById("countdown");
     var displayWidth = document.body.clientWidth;
     var ratio = displayWidth / 1200;
     var height = 312 * ratio;

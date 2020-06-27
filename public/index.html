@@ -1,198 +1,511 @@
 <!DOCTYPE html>
-<html>
-  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/ fb# website: http://ogp.me/ns/ website#">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en">
 
-    <!-- og start -->
-    <meta property="og:url" content="https://super-crazy.jp" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="スーパークレイジー君 公認サイト" />
-    <meta property="og:description" content="東京都知事候補者 西本誠 スーパークレイジー君 公認サイト" />
-    <meta property="og:site_name" content="スーパークレイジー君 公認サイト" />
-    <meta property="og:image" content="https://super-crazy.jp/super-crazy-ogp.jpg" />
-    <meta property='fb:app_id' content='https://super-crazy.jp'>
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@makoto__9999" />
-    <!-- og end -->
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/ fb# website: http://ogp.me/ns/ website#">
 
-    <title>東京都知事候補者 西本誠 スーパークレイジー君 公認サイト</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/7.15.4/firebase-app.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/7.15.4/firebase-auth.js"></script>
-    <script defer src="/__/firebase/7.15.4/firebase-database.js"></script>
-    <script defer src="/__/firebase/7.15.4/firebase-messaging.js"></script>
-    <script defer src="/__/firebase/7.15.4/firebase-storage.js"></script>
-    <!-- initialize the SDK after all desired features are loaded -->
-    <script defer src="/__/firebase/init.js"></script>
+  <!-- og start -->
+  <meta property="og:url" content="https://super-crazy.jp/majime.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="スーパークレイジー君 公認サイト 真面目版" />
+  <meta property="og:description" content="東京都知事候補者 西本誠 スーパークレイジー君 公認非公式サイト （真面目版）" />
+  <meta property="og:site_name" content="スーパークレイジー君 公認サイト（真面目版）" />
+  <meta property="og:image" content="https://super-crazy.jp/super-crazy-majime-ogp.png" />
+  <meta property='fb:app_id' content='https://super-crazy.jp/majime.html'>
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@makoto__9999" />
+  <!-- og end -->
 
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+  <title>東京都知事候補者 西本誠 スーパークレイジー君 公認非公式サイト （真面目版）</title>
 
-    <!-- bootstrap -->
-    <!-- CSS only -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <!-- JS, Popper.js, and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+  <style>
+    * { user-select: none; }
+    canvas#countdown { background: #eee; display: block; margin: 0 auto; }
+  </style>
 
-    <style media="screen">
-      body {
-        padding: 0px;
-        margin: 0px;
-        background-image: url(super-crazy.jpg);
-        background-repeat: no-repeat;
-        background-position: top center;
-        background-size: 45%;
-        color: white;
-        cursor: url(ganmenx32.png), auto !important;
-        }
-      h1 {
-        font-size: 5em;
-        -webkit-text-stroke: 2px black;
-        }
-      h2 {
-        color: red;
-        font-size: 15em;
-        -webkit-text-stroke: 2px yellow;
-      }
-      h3 {
-        font-size: 4em;
-        color: red;
-        animation: buruburu 0.2s linear infinite;
-        -webkit-text-stroke: 2px yellow;
-      }
-      h4 {
-        font-size: 5em !important;
-        -webkit-text-stroke: 2px black;
-      }
-      div#twitter-widget-wrap {
+  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-      }
-      .twitter-share-button {
-        transform: scale(3, 3);
-        /**position: absolute !important;
-        top: 100px;
-        right: 170px;
-        margin-left: 50%;**/
-      }
-      .twitter-share-button {
-        transform: scale(3, 3);
-      }
-      #wrap1 {
-        text-align: center;
-        margin-top: 50%;
-      }
-      #youtube-embed {
-        transform:scale(0.1, 0.1);
-        position: absolute;
-        top: -120px;
-        left: -240px;
-      }
-      @keyframes guruguru {
-        0%   { transform: scale(5, 5) rotate(0deg); }
-        100% { transform: scale(5, 5) rotate(360deg); }
-      }
-      @keyframes buruburu {
-        0%   {transform: translateX(-5px) translateY(-5px); }
-        100% {transform: translateX(5px) translateY(5px); }
-      }
-      #wrap3 {
-        text-align: center;
-      }
-      #wrap4 {
-        margin-top: 200px;
-        text-align: center;
-      }
-    </style>
-  </head>
-  <body>
+  <!-- bootstrap -->
+  <!-- CSS only -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <!-- JS, Popper.js, and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
-    <iframe id="youtube-embed" width="560" height="315" src="https://www.youtube.com/embed/kJoXoU8qKSk?rel=0&controls=0&autoplay=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <!-- firebase -->
+  <!-- update the version number as needed -->
+  <script defer src="/__/firebase/7.15.4/firebase-app.js"></script>
+  <!-- include only the Firebase features as you need -->
+  <script defer src="/__/firebase/7.15.4/firebase-auth.js"></script>
+  <script defer src="/__/firebase/7.15.4/firebase-firestore.js"></script>
+  <script defer src="/__/firebase/7.15.4/firebase-messaging.js"></script>
+  <script defer src="/__/firebase/7.15.4/firebase-storage.js"></script>
+  <!-- initialize the SDK after all desired features are loaded -->
+  <script defer src="/__/firebase/init.js"></script>
+</head>
 
-    <div id="wrap1">
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">スーパークレイジー君 公認非公式サイト （真面目版）</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">真面目
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/breakout.html">百合子崩し</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/clicker.html">クリッカー</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/countdown.html">カウントダウン</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/5454.html">5454</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Content -->
+  <div class="jumbotron">
+    <div class="container">
+      <h1 class="display-1">百合子か、俺か</h1>
+      <p class="lead">眠っている600万票に一番近い男</p>
       <a class="twitter-share-button"
         href="https://twitter.com/intent/tweet"
         data-size="large">
           Tweet
       </a>
-    </div>
-    <div id="wrap4">
       <a class="twitter-follow-button"
         href="https://twitter.com/makoto__9999"
         data-size="large">
-      Follow @makoto__9999v</a>
-      <a class="twitter-follow-button"
-        href="https://twitter.com/shibaichutatu88"
-        data-size="large">
-      Follow @shibaichutatu88</a>
+      Follow @makoto__9999v
+    </a>
     </div>
-
-    <div id="wrap3">
-      <h2>百合子か、俺か</h2>
-      <iframe src="https://open.spotify.com/embed/album/5AP2EN2Vnuc6bhTDd69EzL" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+  </div>
+  <div class="countdown-container">
+    <h2>俺が都知事になるまで...</h2>
+    <canvas id="countdown" width="1200" height="312"></canvas>
+    <h1 class="text-right display-3">秒</h1>
+  </div>
+  <div class="clicker-container">
+    <h1 class="text-center"><span id="count"></span>票/6000000票</h1>
+    <canvas id="clicker" width="1200" height="512"></canvas>
+    <h1 class="text-center">！！↑↑押して投票↑↑！！</h1>
+  </div>
+  <div class="container shadow my-5 p-1">
+    <h2 class="display-3">スーパークレイジー君の政策</h2>
+    <div class="list-group">
+      <li class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1 display-4">1. 風営法の緩和</h5>
+        </div>
+        <p class="mb-1">風俗営業をはじめとする全ての飲食業の経済再開</p>
+        <p class="mb-1">営業時間の規定を撤廃 24時間営業を推進します</p>
+      </li>
+      <li class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1 display-4">2. ペット殺処分ゼロ</h5>
+        </div>
+        <p class="mb-1">ペットを飼うためのライセンス制度を導入</p>
+        <p class="mb-1">ペット殺処分における罰則の強化</p>
+      </li>
+      <li class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1 display-4">3. 待機児童ゼロ</h5>
+        </div>
+      </li>
     </div>
-
-    <div id="wrap3">
-      <h3>選挙公約</h3>
-      <h3>風営法の緩和</h3>
-      <h4>風俗営業をはじめとする全ての飲食業の経済再開</h4>
-      <h4>営業時間の規定を撤廃 24時間営業を推進します</h4>
-      <h3>ペット殺処分ゼロ</h3>
-      <h4>ペットを飼うためのライセンス制度を導入</h4>
-      <h4>ペット殺処分における罰則の強化</h4>
-      <h3>待機児童ゼロ</h3>
+  </div>
+  <div class="container shadow my-5 p-1">
+    <h2 class="display-3">スーパークレイジー君 都知事選出馬の動機</h2>
+    <div class="list-group">
+      <li class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1 display-4">若者に選挙に興味を持ってもらって投票に行ってほしい</h5>
+        </div>
+      </li>
     </div>
-
-    <div id="wrap5">
-      <span>サイト開発・運営者： yuiseki@gmail.com</span>
+  </div>
+  <div class="container shadow my-5 p-1">
+    <h2 class="display-3">スーパークレイジー君のYouTube</h2>
+    <div class="row row-cols-1 row-cols-md-3">
+      <div class="col mb-4">
+        <div class="card h-100">
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/QSVLy_be868" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="card-footer"></div>
+      </div>
+      <div class="col mb-4">
+        <div class="card h-100">
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/R4ofdwGAIpw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="card-footer"></div>
+      </div>
+      <div class="col mb-4">
+        <div class="card h-100">
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/z0T_CPjtE5g" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="card-footer"></div>
+      </div>
+      <div class="col mb-4">
+        <div class="card h-100">
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/HJhy0sAFsYc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="card-footer"></div>
+      </div>
+      <div class="col mb-4">
+        <div class="card h-100">
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/6Dv-0blLjZU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="card-footer"></div>
+      </div>
+      <div class="col mb-4">
+        <div class="card h-100">
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/kJoXoU8qKSk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="card-footer"></div>
+      </div>
+      <div class="col mb-4">
+        <div class="card h-100">
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/5gidLzGLooQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="card-footer"></div>
+      </div>
+      <div class="col mb-4">
+        <div class="card h-100">
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/WZxTYCznI-0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="card-footer"></div>
+      </div>
     </div>
+  </div>
 
-    <script>
-      let ganmen = function(){
-        let img = document.createElement('img');
-        let documentHeight = $(document).height() - 128;
-        let documentWidth = $(document).width() - 128;
-        let top = Math.floor(Math.random() * (documentHeight));
-        let left = Math.floor(Math.random() * (documentWidth));
-        img.setAttribute('style', 'position: absolute;')
-        img.setAttribute('src', 'ganmenx128.png');
-        $(img).offset({top: top, left: left});
-        document.body.appendChild(img);
-        setInterval(() => {
-          top = Math.floor(Math.random() * (documentHeight));
-          left = Math.floor(Math.random() * (documentWidth));
-          $(img).animate({top: top+"px", left: left+"px"}, 500);
-        }, 1000);
-      };
-      $(document).ready(function () {
-        $(window).scroll(function() {
-          setInterval(() => {
-            ganmen();
-          }, 1000);
+  <span>サイト開発・運営者： yuiseki@gmail.com</span>
+
+<script>
+    var ganmen = new Image();
+    ganmen.src = "ganmenx128.png";
+
+    /* util */
+    var canvasRatio;
+    var fitCanvas = function(canvas) {
+      var displayWidth = document.body.clientWidth;
+      canvasRatio = displayWidth / canvas.width;
+      var height = canvas.height * canvasRatio;
+      canvas.height = height;
+      canvas.width = displayWidth;
+    };
+
+    /* countdown */
+    var countdownCanvas = document.getElementById("countdown");
+    var countdownContext = countdownCanvas.getContext("2d");
+    fitCanvas(countdownCanvas);
+
+    var const_width = 32 * canvasRatio;
+    var const_height = 32 * canvasRatio;
+    var countDownDate = new Date("Jul 5, 2020 20:00:00").getTime();
+    var ato = 0;
+    var x = setInterval(function() {
+        var now = new Date().getTime();
+        var distance = countDownDate - now;
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        ato = days * 3600 * 24 + hours * 3600 + minutes * 60 + seconds;
+    }, 1000);
+
+    var drawCountdown = function() {
+        countdownContext.clearRect(0, 0, countdownCanvas.width, countdownCanvas.height);
+        ato_s = new String(ato);
+        var base_x = 0;
+
+        for(var i = 0; i < ato_s.length; i++) {
+            var panel = panels[ato_s[i]];
+            var x = base_x;
+            var y = 0;
+            for (j = 0; j < panel.length; j++) {
+                var parts = panel[j];
+                for (k = 0; k < parts.length; k++) {
+                    if (parts[k] == 1) {
+                        countdownContext.drawImage(ganmen, x, y, const_width, const_height);
+                    }
+                    x += const_width;
+                }
+                y += const_height;
+                x = base_x;
+            }
+            base_x = base_x + const_width * 6;
+        }
+    }
+
+    var panels = {
+      "1": [
+        [0,0,0,0,0],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,0],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,0],
+      ],
+      "2": [
+        [0,1,1,1,0],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,1,1,1,0],
+        [1,0,0,0,0],
+        [1,0,0,0,0],
+        [1,0,0,0,0],
+        [0,1,1,1,0],
+      ],
+      "3": [
+        [0,1,1,1,0],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,1,1,1,0],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,1,1,1,0],
+      ],
+      "4": [
+        [0,0,0,0,0],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [0,1,1,1,0],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,0],
+      ],
+      "5": [
+        [0,1,1,1,0],
+        [1,0,0,0,0],
+        [1,0,0,0,0],
+        [1,0,0,0,0],
+        [0,1,1,1,0],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,1,1,1,0],
+      ],
+      "6": [
+        [0,1,1,1,0],
+        [1,0,0,0,0],
+        [1,0,0,0,0],
+        [1,0,0,0,0],
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [0,1,1,1,0],
+      ],
+      "7": [
+        [0,1,1,1,0],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,0],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,0],
+      ],
+      "8": [
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [0,1,1,1,0],
+      ],
+      "9": [
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [0,1,1,1,0],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,0,0,0,1],
+        [0,1,1,1,0],
+      ],
+      "0": [
+        [0,1,1,1,0],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [0,0,0,0,0],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [1,0,0,0,1],
+        [0,1,1,1,0],
+      ],
+    };
+
+    /* clicker */
+    var clickerCanvas = document.getElementById("clicker");
+    var clickerContext = clickerCanvas.getContext("2d");
+    fitCanvas(clickerCanvas);
+
+    var centerX = (clickerCanvas.width/2)-64;
+    var centerY = (clickerCanvas.height/2)-64;
+    var rightPressed = false;
+    var centerPressed = false;
+    var leftPressed = false
+    clickerCanvas.addEventListener("mousedown", mouseDownHandler, false);
+    clickerCanvas.addEventListener("mouseup", mouseUpHandler, false);
+    clickerCanvas.addEventListener("touchstart", mouseDownHandler, false);
+    clickerCanvas.addEventListener("touchend", mouseUpHandler, false);
+
+    function mouseDownHandler(e) {
+        console.log("click")
+        switch(e.which){
+          case 1:
+            leftPressed = true;
+            randomGanmen();
+            break;
+          case 2:
+            centerPressed = true;
+            break;
+          case 3:
+            rightPressed = true;
+            break;
+        }
+    };
+    function mouseUpHandler(e) {
+        switch(e.which){
+          case 1:
+            leftPressed = false;
+            fallDownGanmen();
+            break;
+          case 2:
+            centerPressed = false;
+            break;
+          case 3:
+            rightPressed = true;
+            break;
+        }
+    };
+    var incrementFirebase = function(){
+      if(firebase.firestore){
+        var increment = firebase.firestore.FieldValue.increment(1);
+        var db = firebase.firestore();
+        var counter = db.collection('clicker').doc('all');
+        counter.update({ count: increment })
+      }
+    };
+    var fallDownGanmen = function(){
+      let img = document.createElement('img');
+      let documentHeight = $(document).height();
+      let documentWidth = $(document).width();
+      let top = 0;
+      let left = Math.floor(Math.random() * (documentWidth-128));
+      img.setAttribute('style', 'position: absolute;')
+      img.setAttribute('src', 'ganmenx128.png');
+      $(img).offset({top: top, left: left});
+      document.body.appendChild(img);
+      setInterval(() => {
+        top = top + 1;
+        $(img).animate({top: top+"%"}, 10);
+        if(top>100){
+          $(img).remove();
+        }
+      }, 100);
+      incrementFirebase();
+    };
+    var randomGanmen = function() {
+      var img = document.createElement('img');
+      var documentHeight = $(document).height() - 128;
+      var documentWidth = $(document).width() - 128;
+      var top = Math.floor(Math.random() * (documentHeight));
+      var left = Math.floor(Math.random() * (documentWidth));
+      img.setAttribute('style', 'position: absolute;')
+      img.setAttribute('src', 'ganmenx128.png');
+      $(img).offset({top: top, left: left});
+      document.body.appendChild(img);
+      setInterval(() => {
+        top = Math.floor(Math.random() * (documentHeight));
+        left = Math.floor(Math.random() * (documentWidth));
+        $(img).animate({top: top+"px", left: left+"px"}, 500);
+      }, 1000);
+      setTimeout(() => {
+        $(img).remove();
+      }, 10000);
+      incrementFirebase();
+    };
+
+    var drawClicker = function() {
+        clickerContext.clearRect(0, 0, clickerCanvas.width, clickerCanvas.height);
+        if(leftPressed){
+            clickerContext.drawImage(ganmen, 0, 0, 128, 128, centerX+32, centerY+32, 64, 64)
+        }else{
+            clickerContext.drawImage(ganmen, 0, 0, 128, 128, centerX, centerY, 128, 128)
+        }
+    };
+
+    var draw = function() {
+        drawCountdown();
+        drawClicker();
+        requestAnimationFrame(draw);
+    }
+    draw();
+
+    $(document).ready(function () {
+      try {
+        let app = firebase.app();
+        let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
+
+        firebase.auth().signInAnonymously().catch(function(error) {
+          var errorCode = error.code;
+          console.log(errorCode);
+          var errorMessage = error.message;
+          console.log(errorMessage);
         });
 
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+            var isAnonymous = user.isAnonymous;
+            var uid = user.uid;
+          }
+        });
 
-        try {
-          let app = firebase.app();
-          let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
-          document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
-        }
-      });
-    </script>
-  </body>
+        var db = firebase.firestore();
+        var counter = db.collection('clicker').doc('all').onSnapshot(function(doc){
+          var dom = document.getElementById('count');
+          dom.innerHTML = doc.data()["count"];
+        })
+
+      } catch (e) {
+        console.error(e);
+      }
+    });
+</script>
+</body>
 </html>
