@@ -1,5 +1,5 @@
-var galacticTexture0 = THREE.ImageUtils.loadTexture( "images/galactic_sharp.png" );
-var galacticTexture1 = THREE.ImageUtils.loadTexture( "images/galactic_blur.png" );
+var galacticTexture0 = THREE.ImageUtils.loadTexture( "/ganmenx128-reverse.png" );
+var galacticTexture1 = THREE.ImageUtils.loadTexture( "/ganmenx128-reverse	.png" );
 
 var galacticUniforms = {
 	color:     { type: "c", value: new THREE.Color( 0xffffff ) },
@@ -119,7 +119,7 @@ function generateGalaxy(){
 
 	//	make a top down image
 	var galacticTopMaterial = new THREE.MeshBasicMaterial({
-		map: THREE.ImageUtils.loadTexture('images/galactictop.png'),
+		map: THREE.ImageUtils.loadTexture('/ganmenx128-reverse.png'),
 		blending: THREE.AdditiveBlending,
 		depthTest: false,
 		depthWrite: false,
