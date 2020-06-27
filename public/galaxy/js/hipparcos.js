@@ -20,7 +20,7 @@ var datastarTexture1 = THREE.ImageUtils.loadTexture( "/ganmenx128-reverse.png" )
 var datastarHeatVisionTexture = THREE.ImageUtils.loadTexture( "images/sharppoint.png" );
 
 //	bright flashy named stars graphic
-var starPreviewTexture = THREE.ImageUtils.loadTexture( 'images/ganmenx128-reverse.png', undefined, setLoadMessage("Focusing optics")	);
+var starPreviewTexture = THREE.ImageUtils.loadTexture( '/ganmenx128.png', undefined, setLoadMessage("Focusing optics")	);
 var starColorGraph = THREE.ImageUtils.loadTexture( 'images/star_color_modified.png' );
 
 var datastarUniforms = {
