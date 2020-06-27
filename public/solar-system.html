@@ -1,0 +1,371 @@
+<div id="stage"></div>
+<script src="https://82mou.github.io/threejs/js/three.js"></script>
+<script src="https://82mou.github.io/threejs/js/OrbitControls.js"></script>
+<script src="https://code.createjs.com/preloadjs-0.6.2.min.js"></script>
+<script>
+window.onload = function() {
+let scene;
+let camera;
+let light;
+let ambient;
+let gridHelper;
+let axisHelper;
+let lightHelper;
+let renderer;
+let loader;
+let width = document.body.clientWidth-20;
+let height = document.body.clientHeight-20;
+let controls;
+
+// テクスチャー
+let textureSun;
+let textureMercury;
+let textureVenus;
+let textureEarth;
+let textureCrowd;
+let textureMars;
+let textureJupiter;
+let textureSaturn;
+let textureSaturnRing;
+let textureOuranos;
+let textureOuranosRing;
+let texturePluto;
+let textureNeptune;
+let textureUniverse;
+  
+// オブジェクト
+let sun;
+let mercury;
+let venus;
+let earth;
+let crowd;
+let mars;
+let jupiter;
+let saturn;
+let saturnRing;
+let ouranos;
+let ouranosRing;
+let pluto;
+let neptune;
+let universe;
+
+// position
+let mercuryX = 100;
+let mercuryZ = 100;
+let venusX = 200;
+let venusZ = 200;
+let earthX = 300;
+let earthZ = 300;
+let marsX = 400;
+let marsZ = 400;
+let jupiterX = 500;
+let jupiterZ = 500;
+let saturnX = 600;
+let saturnZ = 600;
+let ouranosX = 700;
+let ouranosZ = 700;
+let plutoX = 800;
+let plutoZ = 800;
+let neptuneX = 900;
+let neptuneZ = 900;
+
+let mercuryTheta = 0;
+let venusTheta = 0;
+let earthTheta = 0;
+let marsTheta = 0;
+let jupiterTheta = 0;
+let saturnTheta = 0;
+let ouranosTheta = 0;
+let plutoTheta = 0;
+let neptuneTheta = 0;
+
+// ステージを作る
+scene = new THREE.Scene();
+
+// 読み込むテクスチャーリスト
+let manifest = [
+  { id: 'sun', src: 'super-crazy-sphere.png'}, // 太陽
+  { id: 'mercury', src: 'ganmenx128-sphere.png'}, // 水星
+  { id: 'venus', src: 'ganmenx128-sphere.png'}, // 金星
+  { id: 'earth', src: 'https://raw.githubusercontent.com/82mou/sandbox/master/universe/img/earth.png'}, // 地球
+  { id: 'crowd', src: 'https://raw.githubusercontent.com/82mou/sandbox/master/universe/img/crowd.png'}, // 雲
+  { id: 'mars', src: 'ganmenx128-sphere.png'}, // 火星
+  { id: 'jupiter', src: 'ganmenx128-sphere.png'}, // 木星
+  { id: 'saturn', src: 'ganmenx128-sphere.png'}, // 土星
+  { id: 'saturn-ring', src: 'https://raw.githubusercontent.com/82mou/sandbox/master/universe/img/saturn-ring.jpg'}, // 土星の輪
+  { id: 'ouranos', src: 'ganmenx128-sphere.png'}, // 天王星
+  { id: 'ouranos-ring', src: 'https://raw.githubusercontent.com/82mou/sandbox/master/universe/img/ouranos-ring.jpg'}, // 天王星の輪
+  { id: 'pluto', src: 'ganmenx128-sphere.png'}, // 冥王星
+  { id: 'neptune', src: 'ganmenx128-sphere.png'}, // 海王星
+  { id: 'universe', src: 'https://raw.githubusercontent.com/82mou/sandbox/master/universe/img/universe.jpg'} // 宇宙空間
+];
+
+// ロードキューを作成
+let loadQueue = new createjs.LoadQueue();
+
+// ロード完了を監視
+loadQueue.on('complete', function() {
+  // loadQueueからロードした画像データを取得
+  let sunImg = loadQueue.getResult('sun');
+  let mercuryImg = loadQueue.getResult('mercury');
+  let venusImg = loadQueue.getResult('venus');
+  let earthImg = loadQueue.getResult('earth');
+  let crowdImg = loadQueue.getResult('crowd');
+  let marsImg = loadQueue.getResult('mars');
+  let jupiterImg = loadQueue.getResult('jupiter');
+  let saturnImg = loadQueue.getResult('saturn');
+  let saturnRingImg = loadQueue.getResult('saturn-ring');
+  let ouranosImg = loadQueue.getResult('ouranos');
+  let ouranosRingImg = loadQueue.getResult('ouranos-ring');
+  let plutoImg = loadQueue.getResult('pluto');
+  let neptuneImg = loadQueue.getResult('neptune');
+  let universeImg = loadQueue.getResult('universe');
+
+  // three.jsで使えるテクスチャーに変換
+  textureSun = new THREE.Texture(sunImg);
+  textureMercury = new THREE.Texture(mercuryImg);
+  textureVenus = new THREE.Texture(venusImg);
+  textureEarth = new THREE.Texture(earthImg);
+  textureCrowd = new THREE.Texture(crowdImg);
+  textureMars = new THREE.Texture(marsImg);
+  textureJupiter = new THREE.Texture(jupiterImg);
+  textureSaturn = new THREE.Texture(saturnImg);
+  textureSaturnRing = new THREE.Texture(saturnRingImg);
+  textureOuranos = new THREE.Texture(ouranosImg);
+  textureOuranosRing = new THREE.Texture(ouranosRingImg);
+  texturePluto = new THREE.Texture(plutoImg);
+  textureNeptune = new THREE.Texture(neptuneImg);
+  textureUniverse = new THREE.Texture(universeImg);
+
+  // 【重要】更新を許可
+  textureSun.needsUpdate = true;
+  textureMercury.needsUpdate = true;
+  textureVenus.needsUpdate = true;
+  textureEarth.needsUpdate = true;
+  textureCrowd.needsUpdate = true;
+  textureMars.needsUpdate = true;
+  textureJupiter.needsUpdate = true;
+  textureSaturn.needsUpdate = true;
+  textureSaturnRing.needsUpdate = true;
+  textureOuranos.needsUpdate = true;
+  textureOuranosRing.needsUpdate = true;
+  texturePluto.needsUpdate = true;
+  textureNeptune.needsUpdate = true;
+  textureUniverse.needsUpdate = true;
+
+  sun = planetFactory(textureSun, 50, 20, 20, 0, 0, 'isSun');
+  mercury = planetFactory(textureMercury, 5, 20, 20, mercuryX, mercuryZ);
+  venus = planetFactory(textureVenus,10 , 20, 20, venusX, venusZ);
+  earth = planetFactory(textureEarth,13 , 20, 20, earthX, earthZ, 'isEarth');
+  mars = planetFactory(textureMars,7 , 20, 20, marsX, marsZ);
+  jupiter = planetFactory(textureJupiter, 30, 20, 20, jupiterX, jupiterZ);
+  saturn = planetFactory(textureSaturn, 18, 20, 20, saturnX, saturnZ, 'isSaturn');
+  ouranos = planetFactory(textureOuranos,20 , 20, 20, ouranosX, ouranosZ, 'isOuranos');
+  pluto = planetFactory(texturePluto,18 , 20, 20, plutoX, plutoZ);
+  neptune = planetFactory(textureNeptune, 17, 20, 20, neptuneX, neptuneZ);
+  universe = planetFactory(textureUniverse, 10000, 20, 20, 0, 0, 'isUniverse');
+  render();
+});
+
+// テクスチャーのロードを開始
+loadQueue.loadManifest(manifest);
+
+// 追加：点光源を作る
+light = new THREE.PointLight(0xffffff, 3, 0);
+light.position.set(0, 0, 0);
+scene.add(light);
+
+// 環境光を作る
+ambient = new THREE.AmbientLight(0x222222);
+scene.add(ambient);
+
+// カメラを作る
+camera = new THREE.PerspectiveCamera(60, width / height, 1, 1000000);
+camera.position.set(400, 200, 300);
+camera.lookAt(scene.position);
+
+// helper
+// gridHelper = new THREE.GridHelper(400, 40);
+// scene.add(gridHelper);
+// axisHelper = new THREE.AxisHelper(1000);
+// scene.add(axisHelper);
+// lightHelper = new THREE.PointLightHelper(light, 20);
+// scene.add(lightHelper);
+
+// controls
+controls = new THREE.OrbitControls(camera);
+controls.minDistance = 0;   //近づける距離の最小値
+controls.maxDistance = 9800;   //遠ざかれる距離の最大値
+
+// renderer
+renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(width, height);
+renderer.setClearColor(0xefefef);
+renderer.setPixelRatio(window.devicePixelRatio);
+document.getElementById('stage').appendChild(renderer.domElement);
+1
+  /*
+   * texture = テクスチャー
+   * radius、widthSegments、heightSegments = 形状
+   * x、z = 座標
+   * planetName = 惑星の名前
+   */
+function planetFactory (texture, radius, widthSegments, heightSegments, x, z, planetName) {
+  let sphere,
+      sphereEarth,
+      ring;
+  
+   if(planetName === 'isSun') {
+    sphere = new THREE.Mesh(
+      new THREE.SphereGeometry(radius, widthSegments, heightSegments), // 形状     
+      new THREE.MeshBasicMaterial({ // 材質     
+        map: texture,
+        side: THREE.DoubleSide // 裏からも見えるようにする
+      })
+    );
+    sphere.position.set(x, 0, z);
+  } else if(planetName === 'isEarth') {      
+    sphere = new THREE.Group();
+
+    sphereEarth = new THREE.Mesh(
+      new THREE.SphereGeometry(13 , 20, 20), // 形状
+      new THREE.MeshLambertMaterial({ // 材質     
+        map: texture                           
+      })
+    );
+
+    crowd = new THREE.Mesh(
+      new THREE.SphereGeometry(14, 20, 20), // 形状     
+      new THREE.MeshLambertMaterial({ // 材質     
+        map: textureCrowd,
+        transparent: true,
+        side: THREE.DoubleSide // 裏からも見えるようにする                         
+      })
+    );
+
+    sphere.add(sphereEarth);
+    sphere.add(crowd);
+
+    sphere.position.set(x, 0, z);
+  } else if(planetName === 'isSaturn') {
+    sphere = new THREE.Group();
+
+    sphereEarth = new THREE.Mesh(
+      new THREE.SphereGeometry(13 , 20, 20), // 形状
+      new THREE.MeshLambertMaterial({ // 材質     
+        map: texture                           
+      })
+    );
+
+    // 輪を作る
+    ring = new THREE.Mesh(
+      new THREE.TorusGeometry(22, 　5, 2, 1000), // 芯円半径、断面円半径、断面円分割、芯円分割
+      new THREE.MeshPhongMaterial({ // 材質
+        map: texture,
+        opacity:0.7,
+        transparent: true
+      })
+    );
+    
+    ring.rotation.x = 1.5
+    
+    sphere.add(sphereEarth);
+    sphere.add(ring);
+
+    sphere.position.set(x, 0, z);
+  } else if(planetName === 'isOuranos') {
+    sphere = new THREE.Group();
+
+    sphereEarth = new THREE.Mesh(
+      new THREE.SphereGeometry(13 , 20, 20), // 形状
+      new THREE.MeshLambertMaterial({ // 材質     
+        map: texture                           
+      })
+    );
+
+    // 輪を作る
+    ring = new THREE.Mesh(
+      new THREE.TorusGeometry(18, 　5, 2, 1000), // 芯円半径、断面円半径、断面円分割、芯円分割
+      new THREE.MeshPhongMaterial({ // 材質
+        map: texture,
+        opacity:0.7,
+        transparent: true
+      })
+    );
+    
+    ring.rotation.x = 1.5
+    
+    sphere.add(sphereEarth);
+    sphere.add(ring);
+
+    sphere.position.set(x, 0, z);
+  } else if(planetName === 'isUniverse') {
+    sphere = new THREE.Mesh(
+      new THREE.SphereGeometry(radius, widthSegments, heightSegments), // 形状     
+      new THREE.MeshLambertMaterial({ // 材質     
+        map: texture,
+        side: THREE.DoubleSide // 裏からも見えるようにする
+      })
+    );
+    sphere.position.set(x, 0, z);
+  } else {
+    sphere = new THREE.Mesh(
+      new THREE.SphereGeometry(radius, widthSegments, heightSegments), // 形状
+      new THREE.MeshLambertMaterial({ // 材質     
+        map: texture                           
+      })
+    );
+    sphere.position.set(x, 0, z);
+  }
+  scene.add(sphere);
+  return sphere;
+}
+
+function render() {
+  sun.rotation.y += 0.01; // 追加：太陽を回転させる
+  mercury.rotation.y += 0.05; // 追加：水星を回転させる
+  venus.rotation.y += 0.010; // 追加：金星を回転させる
+  earth.rotation.y += 0.005; // 追加：地球を回転させる
+  crowd.rotation.y += 0.010; // 追加：雲を回転させる
+  mars.rotation.y += 0.02; // 追加：火星を回転させる
+  jupiter.rotation.y += 0.03; // 追加：木星を回転させる
+  saturn.rotation.y += 0.04; // 追加：土星を回転させる
+  ouranos.rotation.y += 0.05; // 追加：天王星を回転させる
+  pluto.rotation.y += 0.06; // 追加：冥王星を回転させる
+  neptune.rotation.y += 0.07; // 追加：海王星を回転させる
+  
+  mercuryTheta -= 0.1;
+  venusTheta -= 0.2;
+  earthTheta -= 0.3;
+  marsTheta -= 0.4;
+  jupiterTheta -= 0.5;
+  saturnTheta -= 0.6;
+  ouranosTheta -= 0.7;
+  plutoTheta -= 0.8;
+  neptuneTheta -= 0.9;
+  mercury.position.x = Math.cos(THREE.Math.degToRad(mercuryTheta)) * mercuryX;
+  mercury.position.z = Math.sin(THREE.Math.degToRad(mercuryTheta)) * mercuryZ;
+  venus.position.x = Math.cos(THREE.Math.degToRad(venusTheta)) * venusX;
+  venus.position.z = Math.sin(THREE.Math.degToRad(venusTheta)) * venusZ;
+  earth.position.x = Math.cos(THREE.Math.degToRad(earthTheta)) * earthX;
+  earth.position.z = Math.sin(THREE.Math.degToRad(earthTheta)) * earthZ;
+  mars.position.x = Math.cos(THREE.Math.degToRad(marsTheta)) * marsX;
+  mars.position.z = Math.sin(THREE.Math.degToRad(marsTheta)) * marsZ;
+  jupiter.position.x = Math.cos(THREE.Math.degToRad(jupiterTheta)) * jupiterX;
+  jupiter.position.z = Math.sin(THREE.Math.degToRad(jupiterTheta)) * jupiterZ;
+  saturn.position.x = Math.cos(THREE.Math.degToRad(saturnTheta)) * saturnX;
+  saturn.position.z = Math.sin(THREE.Math.degToRad(saturnTheta)) * saturnZ;
+  ouranos.position.x = Math.cos(THREE.Math.degToRad(ouranosTheta)) * ouranosX;
+  ouranos.position.z = Math.sin(THREE.Math.degToRad(ouranosTheta)) * ouranosZ;
+  pluto.position.x = Math.cos(THREE.Math.degToRad(plutoTheta)) * plutoX;
+  pluto.position.z = Math.sin(THREE.Math.degToRad(plutoTheta)) * plutoZ;
+  neptune.position.x = Math.cos(THREE.Math.degToRad(neptuneTheta)) * neptuneX;
+  neptune.position.z = Math.sin(THREE.Math.degToRad(neptuneTheta)) * neptuneZ;
+
+  controls.update();
+  renderer.render(scene, camera);
+  
+  requestAnimationFrame(render);
+}
+}
+</script>

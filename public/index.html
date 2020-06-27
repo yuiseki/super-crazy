@@ -414,13 +414,23 @@
             break;
         }
     };
+    var incrementNumber = 0;
+    var incrementWait = 0;
     var incrementFirebase = function(){
-      if(firebase.firestore){
-        var increment = firebase.firestore.FieldValue.increment(Math.floor(Math.random() * (100)));
+      console.log("incrementFirebase");
+      firebase.analytics().logEvent('clicker_count_up');
+      incrementWait = incrementWait + 1;
+      incrementNumber = incrementNumber + Math.floor(Math.random() * (100));
+      var countDom = document.getElementById('count');
+      var count = incrementNumber + parseInt(countDom.innerHTML);
+      countDom.innerHTML = count;
+      if(firebase.firestore && incrementWait > 50){
+        incrementWait = 0;
+        console.log("updateFirebase");
+        var increment = firebase.firestore.FieldValue.increment(incrementNumber);
         var db = firebase.firestore();
         var counter = db.collection('clicker').doc('all');
         counter.update({ count: increment })
-        firebase.analytics().logEvent('clicker_count_up');
       }
     };
     var fallDownGanmen = function(){
