@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>どんどん増えていって素数の時だけ円になるスーパークレイジー君</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600" />
+  <style>
+body {
+  font-family: "Open Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  padding-bottom: 150px;
+}
+html {
+  overflow-y: scroll;
+}
+h1 {
+  color: steelblue;
+  font-weight: 800;
+  font-size: 1.7em;
+}
+h2 {
+  color: steelblue;
+  font-size: 1.3em;
+  padding-bottom: 10px;
+}
+h3 {
+  color: gray;
+  font-size: 1.2em;
+  padding-bottom: 10px;
+}
+footer a,
+footer a:hover, footer a:visited {
+  color: #D2A000;
+}
+.text-small {
+  font-size: 12px;
+  font-style: italic;
+}
+footer {
+  color: white;
+  padding-top: 5px;
+  border-top: 1px solid gray;
+  font-size: 12px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  height: 50px;
+  width: 100%;
+  background: black;
+  text-align: center;
+}
+pre {
+  height: 200px;
+  font-size: 9px;
+  overflow-y: scroll;
+}
+blockquote {
+  font-size: 1em;
+  font-style: italic;
+}
+.controls input {
+  width: 100px;
+}
+  </style>
+  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</head>
+
+<body class="container">
+  <!-- header-->
+  <header class="page-header">
+    <h1>どんどん増えていって素数の時だけ円になるスーパークレイジー君</h1>
+    <p class="text-small">a D3 picture produced by chrisrzhou</p>
+    <a class="twitter-share-button"
+      href="https://twitter.com/intent/tweet"
+      data-size="large">
+        Tweet
+    </a>
+    <a class="twitter-follow-button"
+      href="https://twitter.com/makoto__9999"
+      data-size="large">
+    Follow @makoto__9999v
+    </a>
+  </header>
+
+
+  <!-- main content -->
+  <div class="main container">
+    <blockquote>
+      The fundamental theorem of arithmetic states that every integer greater than 1 is either prime itself or a product of prime numbers.
+    </blockquote>
+
+    <!-- controls -->
+    <div class="btn-group controls">
+      <input type="number" class="btn btn-default btn-sm" title="Input a number" id="inputNumber" />
+      <a class="btn btn-default btn-sm" title="Search" id="search"><i class="fa fa-search"></i></a>
+      <a class="btn btn-default btn-sm" title="Backward" id="backward"><i class="fa fa-chevron-left"></i></a>
+      <a class="btn btn-default btn-sm" title="Stop" id="stop"><i class="fa fa-stop"></i></a>
+      <a class="btn btn-default btn-sm" title="Forward" id="forward"><i class="fa fa-chevron-right"></i></a>
+    </div>
+
+    <!-- visualization -->
+    <div id="vis"></div>
+
+    <hr/>
+
+    <!-- description -->
+    <h2>Details</h2>
+    <p>
+      <i>Dances with Factors</i> is inspired by the creation of <a href="http://www.datapointed.net/visualizations/math/factorization/animated-diagrams/" target="_blank">Stephen Von Worley</a>, which in turn is based on the original idea by <a href="http://mathlesstraveled.com/2012/10/05/factorization-diagrams/"
+      target="_blank">Brent Yorgey</a>.  Use the control widgets to explore prime factorization of various numbers! You might be interested to check out some cool numbers e.g. <code>243</code>, <code>611</code>, <code>700</code>, <code>1024</code> :)
+    </p>
+
+    <p>
+      This visualization helps us track the prime factors that compose a given number. We can easily identify primes when we arrive to a simple circle (i.e. a prime cannot be composed of smaller divisors). We can also identify common patterns of smaller prime
+      divisors e.g. <code>2</code>, <code>3</code>, <code>5</code>
+    </p>
+    <hr/>
+
+    <!-- implementation -->
+    <h2>Implementation</h2>
+    <p>
+      An excellent implementation of prime factorization through SVG recursion is provided by <a href="https://www.jasondavies.com/factorisation-diagrams/" target="_blank">Jason Davies</a>. Instead of a recursive approach, I decided to handle the problem
+      through generating all relevant attributes of points i.e. <code>x</code>, <code>y</code>, and <code>r</code>. This allows me to provide a data-driven solution to the problem and allow D3 to handle the transitions on new and old points.
+    </p>
+
+    <p>More details on code implementation and a guide can be found in the Github project page or on <a href="http://chrisrzhou.datanaut.io/">datanaut.io</a>
+    </p>
+  </div>
+
+  <!-- footer -->
+  <footer>
+    <p>
+      <a href="https://gist.github.com/chrisrzhou/3fec15b05684fa0cf42e" target="_blank">どんどん増えていって素数の時だけ円になるスーパークレイジー君</a> by
+      <a href="http://chrisrzhou.datanaut.io/projects" target="_blank">chrisrzhou</a>, 2015-02-18
+      <br />
+      <a href="https://github.com/chrisrzhou" target="_blank"><i class="fa fa-github"></i></a> |
+      <a href="http://bl.ocks.org/chrisrzhou" target="_blank"><i class="fa fa-cubes"></i></a> |
+      <a href="https://www.linkedin.com/in/chrisrzhou" target="_blank"><i class="fa fa-linkedin"></i></a>
+    </p>
+  </footer>
+
+  <!-- scripts -->
+  <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script>
+/**
+ * Return array of prime factors (in ascending order) of n.
+ * 
+ * We will represent even powers of 2 as 4, for ease of plotting
+ * 
+ * Examples:
+ *    primeFactors(1) = []
+ *    primeFactors(10) = [2, 5]
+ *    primeFactors(5) = [5]
+ *    primeFactors(60) = [4, 3, 5]
+ */
+function primeFactors(n) {
+  if (n < 1) throw "Argument error";
+  var result = [];
+  while (n != 1) {
+    var factor = getFactor(n); // call getFactor function
+    result.push(factor);
+    n /= factor;
+  }
+  return result;
+}
+
+
+/** 
+ * Return smallest prime factor of n.
+ */
+function getFactor(n) {
+  if (n < 2) throw "Argument error";
+  if (n % 4 == 0) return 4;
+  if (n % 2 == 0) return 2;
+  for (var i = 3; i <= Math.floor(Math.sqrt(n)); i += 2) {
+    if (n % i == 0) return i;
+  }
+  return n;
+}
+
+
+/**
+ * Print string representation of array of prime factors
+ * Examples
+ *    printFactors([4, 3, 5]) = "2 × 2 × 3 × 5"
+ *    printFactors([3, 5]) = "3 × 5"
+ *    printFactors([7]) = "prime"
+ */
+ function printFactors(factors) {
+   var string = "";
+   if (factors.length == 1) {
+     string = factors[0] == 4 ? "2 × 2" : "prime";
+     return string;
+   }
+   
+   factors.forEach(function(factor) {
+     stringFactor = factor == 4 ? "2 × 2" : factor;
+     string += stringFactor + " × ";
+   });
+   return string.slice(0, -2);  // remove last two characters
+ }
+
+
+/**
+ * Initialize d3 vis
+ */
+var vis = {};
+init();
+var interval = setInterval(update, vis.speed, true);
+
+
+/**
+ * Generate and distribute points
+ */
+function generatePoints(factors) {
+  // initialize variables
+  var parentPoints = [];
+  var points = [];
+  var a, x, y, da, point;
+  var n = 1;
+  var r = 1;
+  var d = 1;
+
+  while (factors.length) {
+    d *= n; // scale depth
+    n = factors.pop(); // build points from outwards
+    da = n === 4 ? -Math.PI / 4 : n === 2 ? 0 : -Math.PI / 2; // offset
+    r > 1 / 100 ? r *= 1 / n : r *= 0.7;
+
+    if (!points.length) { // account for first set of points
+      d3.range(n).forEach(function(i) {
+        a = i * 2 * Math.PI / n + da;
+        x = Math.cos(a);
+        y = Math.sin(a);
+        point = createPoint(r, x, y);
+        points.push(point);
+      });
+
+    } else { // iteratively build points by keeping track of parentPoints
+      parentPoints = points.slice(); // create shallow copy of points
+      points = []; // reset points;
+      parentPoints.forEach(function(parentPoint) { // build new points using parentPoints
+        d3.range(n).forEach(function(i) {
+          a = i * 2 * Math.PI / n + da;
+          x = parentPoint.x + Math.cos(a) / d;
+          y = parentPoint.y + Math.sin(a) / d;
+          point = createPoint(r, x, y);
+          points.push(point);
+        });
+      })
+    }
+  }
+  return points;
+}
+
+
+// helper function to create a point
+function createPoint(r, x, y) {
+  var point = {
+    r: r,
+    x: x,
+    y: y,
+  };
+  return point;
+}
+
+
+
+/**
+ * initialize vis
+ */
+function init() {
+  // vis parameters
+  vis = {
+    size: 500,
+    number: 1,
+    speed: 1000,
+  };
+  
+  // get prime factors
+  vis.factors = primeFactors(vis.number);
+
+  // build data points
+  vis.points = generatePoints(vis.number);
+
+  // build scale
+  vis.scale = d3.scale.linear()
+    .range([0, vis.size])
+    .domain([-1, 1]);
+
+  // build vis svg
+  vis.svg = d3.select("#vis")
+    .append("svg")
+    .attr("height", 2 * vis.size)
+    .attr("width", 2 * vis.size)
+    .append("g")
+    .attr("transform", "translate(" + [vis.size / 2, vis.size / 2] + ")");
+    
+  // build vis tracker number
+  vis.trackerNumber = vis.svg
+    .append("svg:text").classed("trackerNumber", true)
+    .attr("x", -vis.size / 3)
+    .attr("y", -vis.size / 3)
+    .attr("font-size", "30px")
+    .attr("fill", "gray");
+
+  // build vis tracker factors
+  vis.trackerFactors = vis.svg
+    .append("svg:text").classed("trackerFactors", true)
+    .attr("x", -vis.size / 3)
+    .attr("y", -vis.size / 3 + 25)
+    .attr("font-size", "14px")
+    .attr("fill", "gray");
+
+  var defs = vis.svg.append("defs");
+  defs.append("svg:pattern")
+    .attr("id", "super-crazy")
+    .attr("width", 1) 
+    .attr("height", 1)
+    .attr("patternContentUnits", "objectBoundingBox")
+    .append("svg:image")
+    .attr("xlink:href", "ganmenx128.png")
+    .attr("width", 1)
+    .attr("height", 1)
+    .attr("preserveAspectRatio", "xMinYMin slice");
+  
+  // control logic
+  d3.select("#forward")
+    .on("click", function() {
+      clearInterval(interval);
+      interval = setInterval(update, vis.speed, true);
+    });
+  
+  d3.select("#backward")
+    .on("click", function() {
+      clearInterval(interval);
+      interval = setInterval(update, vis.speed, false);
+    });
+    
+  d3.select("#stop")
+    .on("click", function() {
+      clearInterval(interval);
+    });
+    
+  d3.select("#search")
+    .on("click", function() {
+      vis.number = document.getElementById("inputNumber").value - 1;
+      clearInterval(interval);
+      update(true);
+    });
+}
+
+
+
+/**
+ * Update function for setInterval
+ */
+function update(pos) {
+  // update numbers and factors
+  pos ? vis.number ++ : vis.number > 2 ? vis.number-- : vis.number;
+  vis.factors = primeFactors(vis.number);
+  
+  // update tracker
+  vis.trackerNumber.transition().text(vis.number);
+  vis.trackerFactors.transition().text(printFactors(vis.factors));
+
+  // update points
+  vis.points = generatePoints(vis.factors); // create new points
+  var point = vis.svg.selectAll(".point").data(vis.points);
+
+  // update colorscale
+  vis.colorScale = d3.scale.linear()
+    .domain([0, vis.points.length])
+    .range(["#1f77b4", "#d62728"]);
+
+  // enter
+  point.enter()
+    .append("svg:circle").classed("point", true)
+    .attr("r", 0)
+    .transition().duration(vis.speed / 2)
+    .attr("r", function(d) { return d.r * vis.size; })
+    .attr("cx", function(d) { return vis.scale(d.x); })
+    .attr("cy", function(d) { return vis.scale(d.y); })
+    .attr("fill", function(d, i) { return vis.colorScale(i); })
+    .style("fill", "url(#super-crazy)");
+
+  // update
+  point.transition()
+    .duration(vis.speed / 2)
+    .attr("r", function(d) { return d.r * vis.size; })
+    .attr("cx", function(d) { return vis.scale(d.x); })
+    .attr("cy", function(d) { return vis.scale(d.y); })
+    .attr("fill", function(d, i) { return vis.colorScale(i); })
+    .style("fill", "url(#super-crazy)");
+
+  //exit
+  point.exit()
+  .transition().duration(vis.speed / 2)
+  .attr("r", 0)
+  .remove();
+}
+  </script>
+  <script>
+    // Hack to make this example display correctly in an iframe on bl.ocks.org
+    d3.select(self.frameElement).style("height", "1000px");
+  </script>
+</body>
+
+</html>
