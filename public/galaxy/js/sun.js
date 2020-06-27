@@ -7,7 +7,7 @@ var sunCoronaTexture;
 
 function loadStarSurfaceTextures(){
 	if( sunTexture === undefined ){
-		sunTexture = THREE.ImageUtils.loadTexture( "images/sun_surface.png", undefined, setLoadMessage("Igniting solar plasma") );
+		sunTexture = THREE.ImageUtils.loadTexture( "/super-crazy-sphere.png", undefined, setLoadMessage("Igniting solar plasma") );
 		sunTexture.anisotropy = maxAniso;
 		sunTexture.wrapS = sunTexture.wrapT = THREE.RepeatWrapping;
 	}

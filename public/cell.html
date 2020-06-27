@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name=”viewport” content=”width=device-width">
+  <title>スーパークレイジー君オートマトン</title>
+  <meta name=”viewport” content=”width=960">
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    canvas{
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  <script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</head>
+<body>
+
+<div>
+  <h1 style="display: inline;">スーパークレイジー君オートマトン</h1>
+  <a class="twitter-share-button"
+    href="https://twitter.com/intent/tweet"
+    data-size="large">
+      Tweet
+  </a>
+</div>
+
+  <canvas id="canvas"></canvas>
+
+  <script>
+document.body.onload = function() {
+    var canvasRatio;
+    var fitCanvas = function(canvas) {
+      var displayWidth = document.body.clientWidth;
+      canvasRatio = displayWidth / canvas.width;
+      var height = canvas.height * canvasRatio;
+      if (height < 128) {
+        height = 128
+      }
+      canvas.height = height;
+      canvas.width = displayWidth;
+    };
+
+    const canvas = document.querySelector("canvas");
+    fitCanvas(canvas);
+    const context = canvas.getContext("2d");
+
+    const ALIVE = 1;
+    const DEAD = 0;
+
+    const cell = [];
+    // セルの大きさ
+    const cellSize = 32;
+
+    // 1列のセルの個数
+    const cols = Math.floor(canvas.width / cellSize);
+    // 1行のセルの個数
+    const rows = Math.floor(canvas.height / cellSize);
+
+    /**
+     * 初期設定を行う関数です
+     */
+    function initCells() {
+      context.fillStyle = "rgb(60, 60, 60)";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      for (let col = 0; col < cols; col++) {
+        cell[col] = [];
+        for (let row = 0; row < rows; row++) {
+          cell[col][row] = Math.round(Math.random());
+        }
+      }
+      draw();
+    }
+
+    /**
+     * セルの描画を実行します
+     */
+    function draw() {
+      for (let col = 0; col < cols; col++) {
+        for (let row = 0; row < rows; row++) {
+          drawCell(col, row);
+        }
+      }
+    }
+
+    /**
+     * セルの描画設定です
+     * @param x
+     * @param y
+     */
+    var ganmenx128 = new Image();
+    ganmenx128.src = "ganmenx128.png";
+    function drawCell(x, y) {
+      const state = cell[x][y];
+      if (state !== ALIVE){
+        context.fillStyle = "rgb(255,255,255)";
+        context.fillRect(x * cellSize, y * cellSize, cellSize - 1, cellSize - 1);
+      }else{
+        context.drawImage(ganmenx128, 0, 0, 128, 128, x * cellSize, y * cellSize, cellSize-1, cellSize-1)
+      }
+    }
+
+    /**
+     * 周囲9マスのセルのうち、生存しているセルの数を返す関数です
+     * @param x
+     * @param y
+     */
+    function checkAround(x, y) {
+      let count = 0;
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          if (
+            (i !== 0 || j !== 0) &&
+            x + i > 0 &&
+            x + i < cols &&
+            y + j > 0 &&
+            y + j < rows
+          ) {
+            count += cell[x + i][y + j];
+          }
+        }
+      }
+      return count;
+    }
+
+    /**
+     * セルの状態を更新する関数です
+     */
+    function proceed() {
+      for (let col = 0; col < cols; col++) {
+        for (let row = 0; row < rows; row++) {
+          // 周りの生存セルの数を取得
+          const count = checkAround(col, row);
+          const currentState = cell[col][row];
+          let nextState = DEAD;
+          // 生存時に周りに2体いるときは維持
+          if (count === 2) {
+            nextState = currentState ;
+          }
+          // 周りに3体いるときは誕生または維持
+          if (count === 3) {
+            nextState = ALIVE;
+          }
+          cell[col][row] = nextState;
+        }
+      }
+      draw();
+    }
+
+    initCells();
+    // 100ミリ秒ごとにproceed関数を実行
+    setInterval(proceed, 200);
+
+  }
+  </script>
+</body>
+</html>
