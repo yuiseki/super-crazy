@@ -24,7 +24,10 @@
 
   <style>
     * { user-select: none; }
+    body { background-image: url(super-crazy.jpg);}
     .navbar-brand { font-size: 1em !important; }
+    .container { background-color: white; }
+    h1, h2, h3 { background-color: white;}
     canvas#countdown { background: #eee; display: block; margin: 0 auto; }
   </style>
 
@@ -439,7 +442,6 @@
           $(img).remove();
         }
       }, 100);
-      incrementFirebase();
     };
     var randomGanmen = function() {
       var img = document.createElement('img');
@@ -479,6 +481,10 @@
     draw();
 
     $(document).ready(function () {
+      setInterval(()=>{
+        fallDownGanmen();
+        randomGanmen();
+      }, 1000);
       try {
         let app = firebase.app();
         let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
