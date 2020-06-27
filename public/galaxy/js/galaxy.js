@@ -219,11 +219,11 @@ function generateGalaxy(){
 		// console.log( galacticUniforms.zoomSize.value);
 		if( camera.position.z < 2500 ){
 			if( galacticShaderMaterial.opacity > 0 )
-				galacticShaderMaterial.opacity -= 0.05;
+				galacticShaderMaterial.opacity -= 0.8;
 		}
 		else{
 			if( galacticShaderMaterial.opacity < 1 )
-				galacticShaderMaterial.opacity += 0.05;
+				galacticShaderMaterial.opacity += 0.8;
 		}
 		
 
