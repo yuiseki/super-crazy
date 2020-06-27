@@ -49,6 +49,7 @@
   <script defer src="/__/firebase/7.15.4/firebase-firestore.js"></script>
   <script defer src="/__/firebase/7.15.4/firebase-messaging.js"></script>
   <script defer src="/__/firebase/7.15.4/firebase-storage.js"></script>
+  <script defer src="/__/firebase/7.15.4/firebase-analytics.js"></script>
   <!-- initialize the SDK after all desired features are loaded -->
   <script defer src="/__/firebase/init.js"></script>
 </head>
@@ -420,8 +421,8 @@
         var increment = firebase.firestore.FieldValue.increment(Math.floor(Math.random() * (100)));
         var db = firebase.firestore();
         var counter = db.collection('clicker').doc('all');
-        counter.update({ count: increment });
-        firebase.analytics().logEvent('notification_received');
+        counter.update({ count: increment })
+        firebase.analytics().logEvent('clicker_count_up');
       }
     };
     var fallDownGanmen = function(){
@@ -479,7 +480,6 @@
     }
     draw();
 
-    /* firebase */
     $(document).ready(function () {
       setInterval(()=>{
         fallDownGanmen();
@@ -489,7 +489,6 @@
         let app = firebase.app();
         let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
 
-        firebase.analytics();
         firebase.auth().signInAnonymously().catch(function(error) {
           var errorCode = error.code;
           console.log(errorCode);
