@@ -2,9 +2,21 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>three.js css3d - youtube</title>
+		<title>スーパークレイジー君 政見放送空間</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<!-- og start -->
+		<meta property="og:url" content="https://super-crazy.jp/benchmark.html" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="スーパークレイジー君 政見放送空間" />
+		<meta property="og:description" content="百合子か、俺か" />
+		<meta property="og:site_name" content="スーパークレイジー君 政見放送空間" />
+		<meta property="og:image" content="https://super-crazy.jp/super-crazy-benchmark-ogp.png" />
+		<meta property='fb:app_id' content='https://super-crazy.jp/benchmark.html'>
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:site" content="@makoto__9999" />
+		<!-- og end -->
+		<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 		<style>
 			body {
 				background-color: #ffffff;
@@ -104,7 +116,18 @@
 		</style>
 	</head>
 	<body>
-		<div id="container"></div>
+		<div id="container">
+			<a class="twitter-share-button"
+				href="https://twitter.com/intent/tweet"
+				data-size="large">
+					Tweet
+			</a>
+			<a class="twitter-follow-button"
+				href="https://twitter.com/makoto__9999"
+				data-size="large">
+			Follow @makoto__9999v
+			</a>
+		</div>
 		<div id="blocker"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r99/three.js"></script>
@@ -126,7 +149,7 @@
 				iframe.style.width = '960px';
 				iframe.style.height = '720px';
 				iframe.style.border = '0px';
-				iframe.src = [ 'https://www.youtube.com/embed/', id, '?rel=0&autoplay=1&mute=1' ].join( '' );
+				iframe.src = [ 'https://www.youtube.com/embed/', id, '?rel=0&autoplay=1&mute=1&start=30' ].join( '' );
 				div.appendChild( iframe );
 
 				var object = new THREE.CSS3DObject( div );
