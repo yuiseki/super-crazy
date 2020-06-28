@@ -118,15 +118,15 @@
 			var Element = function ( id, x, y, z, ry ) {
 
 				var div = document.createElement( 'div' );
-				div.style.width = '480px';
-				div.style.height = '360px';
+				div.style.width = '960px';
+				div.style.height = '720px';
 				div.style.backgroundColor = 'transparent';
 
 				var iframe = document.createElement( 'iframe' );
-				iframe.style.width = '480px';
-				iframe.style.height = '360px';
+				iframe.style.width = '960px';
+				iframe.style.height = '720px';
 				iframe.style.border = '0px';
-				iframe.src = [ 'https://www.youtube.com/embed/', id, '?rel=0' ].join( '' );
+				iframe.src = [ 'https://www.youtube.com/embed/', id, '?rel=0&autoplay=1&mute=1' ].join( '' );
 				div.appendChild( iframe );
 
 				var object = new THREE.CSS3DObject( div );
@@ -157,9 +157,9 @@
 				group.add( new Element( 'vnXY5PxDfYA', 0, 0, 240, 0 ) );
         var distance = 240;
         setInterval(()=>{
-          distance = distance + Math.floor(Math.random()*240);
-          var x = (Math.round(Math.random()) * 2 - 1) + distance;
-          var y = (Math.round(Math.random()) + 2 - 1) + distance;
+          distance = distance + Math.floor(Math.random()*120);
+          var x = (Math.round(Math.random()) * 2 - 1) * Math.floor(Math.random()*distance);
+					var y = (Math.round(Math.random()) * 2 - 1) * Math.floor(Math.random()*distance);
           group.add( new Element( 'vnXY5PxDfYA', x, y, distance, (Math.random()*Math.PI) ) );
         }, 1000);
 				scene.add( group );
@@ -196,7 +196,7 @@
 			}
 
 			function animate() {
-				camera.position.z = camera.position.z + 10;
+				camera.position.z = camera.position.z + 5;
 				requestAnimationFrame( animate );
 				controls.update();
 				renderer.render( scene, camera );
