@@ -114,7 +114,8 @@
     <h1 class="text-right display-3">秒</h1>
   </div>
   <div class="clicker-container">
-    <h1 class="text-center"><span id="count"></span>票/6000000票</h1>
+    <h1 class="text-center"><span id="count"></span>票</h1>
+    <h1 class="text-center">目標:6528億3502万8千991票</h1>
     <canvas id="clicker" width="1200" height="128"></canvas>
     <h2 class="text-center">！！↑↑押して投票↑↑！！</h2>
   </div>
@@ -224,6 +225,41 @@
       canvas.height = height;
       canvas.width = displayWidth;
     };
+    var num2ja = function(num) {
+      const keta = ['', '千', '万', '億', '兆', '京'];
+
+      let jaNum = '';
+      let count = 0;
+
+      num = String(num).replace(',', '');
+
+      // 千
+      if(num.length <= 3) {
+        return num;
+      }
+      else {
+        const n = num.slice(-3) - 0 + '';
+        jaNum = [n !== '0' ? `${n}${keta[count]}` : '', jaNum].join('');
+        num = (num / 1000 | 0) + '';
+        count++;
+      }
+      // 万
+      if(num.length > 1) {
+        const n = num.slice(-1) - 0 + '';
+        jaNum = [n !== '0' ? `${n}${keta[count]}` : '', jaNum].join('');
+        num = (num / 10 | 0) + '';
+        count++;
+      }
+      // それ以降
+      while(num.length > 4) {
+        const n = num.slice(-4) - 0 + '';
+        jaNum = [n !== '0' ? `${n}${keta[count]}` : '', jaNum].join('');
+        num = (num / 10000 | 0) + '';
+        count++;
+      }
+      jaNum = [num !== '0' ? `${num}${keta[count]}` : '', jaNum].join('');
+      return jaNum;
+    }
 
     /* countdown */
     var countdownCanvas = document.getElementById("countdown");
@@ -382,6 +418,7 @@
     };
 
     /* clicker */
+    var clickerCount = 0;
     var clickerCanvas = document.getElementById("clicker");
     var clickerContext = clickerCanvas.getContext("2d");
     fitCanvas(clickerCanvas);
@@ -426,14 +463,28 @@
     };
     var incrementNumber = 0;
     var incrementWait = 0;
+    var incrementUnit = 10001
+    var incrementCounter = function(nextClickerCount){
+      if (clickerCount === 0){
+        return;
+      }
+      var interval = setInterval(()=>{
+        clickerCount++;
+        var countJa = num2ja(clickerCount);
+        var countDom = document.getElementById('count');
+        countDom.innerHTML = countJa;
+        if(clickerCount>nextClickerCount){
+          clearInterval(interval);
+        }
+      }, 1)
+    };
     var incrementFirebase = function(){
       console.log("incrementFirebase");
       firebase.analytics().logEvent('clicker_count_up');
       incrementWait = incrementWait + 1;
-      incrementNumber = incrementNumber + Math.floor(Math.random() * (100));
-      var countDom = document.getElementById('count');
-      var count = incrementNumber + parseInt(countDom.innerHTML);
-      countDom.innerHTML = count;
+      incrementNumber = incrementNumber + incrementUnit;
+      var nextClickerCount = incrementNumber + clickerCount;
+      incrementCounter(nextClickerCount);
       if(firebase.firestore && incrementWait > 50){
         incrementWait = 0;
         console.log("updateFirebase");
@@ -523,8 +574,13 @@
 
         var db = firebase.firestore();
         var counter = db.collection('clicker').doc('all').onSnapshot(function(doc){
-          var dom = document.getElementById('count');
-          dom.innerHTML = doc.data()["count"];
+          var nextClickerCount = doc.data()["count"];
+          if (clickerCount === 0){
+            clickerCount = nextClickerCount;
+          }
+          if(clickerCount < nextClickerCount){
+            incrementCounter(nextClickerCount);
+          }
         })
 
       } catch (e) {

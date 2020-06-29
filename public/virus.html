@@ -1,0 +1,764 @@
+<html lang="en"><head>
+
+  <meta charset="UTF-8">
+  
+<link rel="apple-touch-icon" type="image/png" href="https://static.codepen.io/assets/favicon/apple-touch-icon-5ae1a0698dcc2402e9712f7d01ed509a57814f994c660df9f7a952f3060705ee.png">
+<meta name="apple-mobile-web-app-title" content="CodePen">
+
+<link rel="shortcut icon" type="image/x-icon" href="https://static.codepen.io/assets/favicon/favicon-aec34940fbc1a6e787974dcd360f2c6b63348d4b1f4e06c77743096d55480f33.ico">
+
+<link rel="mask-icon" type="" href="https://static.codepen.io/assets/favicon/logo-pin-8f3771b1072e3c38bd662872f6b673a722f4b3ca2421637d5596661b4e2132cc.svg" color="#111">
+
+
+  <title>新型コロナウイルスの感染と同じ速度で小池百合子派がスーパークレイジー君派になった場合シミュレーション</title>
+  
+  
+  
+  
+<style>
+body {
+  background-color: #f2f2f2;
+}
+</style>
+
+  <script>
+  window.console = window.console || function(t) {};
+</script>
+
+  
+  
+  <script>
+  if (document.location.search.match(/type=embed/gi)) {
+    window.parent.postMessage("resize", "*");
+  }
+</script>
+
+
+<style type="text/css">/* Chart.js */
+@-webkit-keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}@keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}.chartjs-render-monitor{-webkit-animation:chartjs-render-animation 0.001s;animation:chartjs-render-animation 0.001s;}</style></head>
+
+<body translate="no">
+  <div style="font-family: sans-serif; background-color: rgba(255, 255, 255, 0.565); position: absolute; left: 10px; top: 10px;">選挙関心率</div>
+  <select style="position: absolute; left: 10px; top: 40px; width: 60px; font-family: sans-serif; font-size: 20px;"><option value="高">高</option><option value="中">中</option><option value="低">低</option></select></body></html>
+  <div id="p5Canvas" style="border-width: thin;">
+    <canvas id="defaultCanvas0" class="p5Canvas" width="780" height="400" style="width: 780px; height: 400px;"></canvas>
+  </div>
+  <div style="text-align: center;">
+    <canvas id="myChart" width="800" height="150" style="display: block; margin: auto;"></canvas>
+  </div>
+    <script src="https://static.codepen.io/assets/common/stopExecutionOnTimeout-157cd5b220a5c80d4ff8e0e70ac069bffd87a61252088146915e8726e5d9f147.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/gh/generative-light/p5.scribble.js/p5.scribble.js"></script>
+<script src="https://cdn.rawgit.com/bit101/quicksettings/master/quicksettings.js"></script>
+<script src="https://cdn.rawgit.com/bitcraftlab/p5.gui/master/libraries/p5.gui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/p5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.7/chartjs-plugin-annotation.min.js"></script>
+  
+      <script id="rendered-js">
+// CONSTANTS
+var TOTAL_NUM = 250;
+var HOSPITAL_CAPACITY = TOTAL_NUM * 0.20;
+var FRAME_RATE = 30;
+var SCREEN_W = 900;
+var SCREEN_H = 600;
+
+var DRAW_GRAPH = true;
+
+// INFECTION/TEST/HOSPITALIZE
+var INFECT_DIST = 20;
+var INFECT_RATE = 0.5;
+var TEST_RATE = 0.001;
+var CURE_RATE = 0.007;
+var MOTALITY_RATE = 0.0002;
+var INCUBATION_ITER = 300;
+
+var STAY_RATIO = 0.10;
+var PERSONAL_DISTANCE = 20;
+
+// MISC
+var INFECT_ANIM_DUR = 40;
+var MAX_GRAPH_SIZE = 100;
+
+// Graph
+var myChart;
+var day_index = 0;
+
+// COLORS
+var C_FIT, C_INFECT, C_HOSPITAL, C_CURE, C_DEAD, C_stroke, C_BG, C_ATTRACTION;
+// images
+var yuriko, ganmen;
+
+var stay_rates_label = ['高', '中', '低'];
+var stay_rates = [0.7, 0.4, 0.05];
+var current_stay_rate = stay_rates[0];
+
+var scribble = new Scribble();
+
+// GUI
+var attractions = [];
+
+function reset() {
+  flock = new Flock();
+
+  for (var i = 0; i < TOTAL_NUM - 1; i++) {if (window.CP.shouldStopExecution(0)) break;
+    var b = new Boid(random(0, width), random(0, height));
+    flock.addBoid(b);
+    if (i < TOTAL_NUM * current_stay_rate) b.stay = true;
+  }
+
+  // start with only one infected person
+  window.CP.exitedLoop(0);var b = new Boid(width / 2, height / 2);
+  b.getInfected();
+  flock.addBoid(b);
+
+  attractions = [];
+  day_index = 0;
+  frameCount = -1;
+
+  // graph
+  if (DRAW_GRAPH) {
+    myChart.data.datasets.forEach(dataset => {
+      dataset.data = new Array(MAX_GRAPH_SIZE);
+    });
+  }
+
+  // Start simulation
+  loop();
+}
+
+var sel;
+
+function selectEvent() {
+  current_stay_rate = stay_rates[stay_rates_label.indexOf(sel.value())];
+  reset();
+}
+
+function setup() {
+  // graph
+  if (DRAW_GRAPH) createGraph();
+
+  var canvas = createCanvas(SCREEN_W, SCREEN_H);
+  canvas.parent('p5Canvas'); // specify canvas
+  frameRate(FRAME_RATE);
+
+  // UI
+  let d = createDiv('選挙関心率');
+  d.style('fontFamily', 'sans-serif');
+  d.style('backgroundColor', '#ffffff90');
+  d.position(10, 10);
+  // d.hide();
+  textAlign(CENTER);
+  sel = createSelect();
+  sel.position(10, 40);
+  sel.option(stay_rates_label[0]);
+  sel.option(stay_rates_label[1]);
+  sel.option(stay_rates_label[2]);
+  sel.selected(stay_rates_label[1]);
+  sel.style('width', '60px');
+  sel.style('fontFamily', 'sans-serif');
+  sel.style('fontSize', '20px');
+  sel.changed(selectEvent);
+  // sel.hide();
+
+  // init
+  current_stay_rate = stay_rates[stay_rates_label.indexOf(sel.value())];
+  reset();
+
+  // Color settings
+  C_FIT = color(100);
+  C_INFECT = color("#ff2222");
+  C_HOSPITAL = color('#2222ff');
+  C_CURE = color("#22ee22");
+  C_DEAD = color(0);
+  C_stroke = color(255, 100);
+  C_BG = color(255);
+  C_ATTRACTION = color(20, 90, 20);
+  yuriko = loadImage("yuriko.jpg");
+  ganmen = loadImage("ganmenx32.png");
+}
+
+function star(x, y, r) {
+  let angle = TWO_PI * 2 / 5;
+  for (let a = -PI / 2; a < PI / 2 + TWO_PI * 2; a += angle) {if (window.CP.shouldStopExecution(1)) break;
+    let sx = x + cos(a) * r;
+    let sy = y + sin(a) * r;
+    let sx2 = x + cos(a + angle) * r;
+    let sy2 = y + sin(a + angle) * r;
+    scribble.scribbleLine(sx, sy, sx2, sy2);
+  }window.CP.exitedLoop(1);
+}
+
+function draw() {
+  background(C_BG);
+
+  stroke(0);
+  strokeWeight(2);
+  noFill();
+  rect(0, 0, width, height);
+
+  // draw boids
+  flock.run();
+
+  // draw attractions
+  noFill();
+  stroke(C_ATTRACTION);
+  strokeWeight(1.0);
+  attractions.forEach(function (a) {
+    star(a.x, a.y, 12, 5);
+  });
+
+  // tracking days 
+  day_index = int(frameCount / FRAME_RATE);
+  if (day_index != last_draw) {
+    if (DRAW_GRAPH) updateGraph(day_index);
+    last_draw = day_index;
+    if (day_index % 5 == 0) {// add new infected person once in a while
+      var b = new Boid(width * int(random(2)), height * int(random(2)));
+      b.getInfected();
+      flock.addBoid(b);
+    }
+  }
+
+  if (day_index > MAX_GRAPH_SIZE) noLoop(); // stop!
+}
+
+Boid.prototype.render = function () {
+  // Draw a triangle rotated in the direction of velocity
+  var theta = this.velocity.heading() + radians(90);
+
+  strokeWeight(1.0);
+  stroke(C_stroke);
+
+  if (this.dead) {// dead
+    fill(C_DEAD);
+    stroke(C_DEAD);
+  } else if (this.cured) {// cured   
+    var a = lerpColor(C_CURE, C_FIT, min(1.0, this._counter / 200));
+    fill(a);
+    // if (this._counter/200 > 1.0) this.cured = false; // reset 
+  } else if (this.infected && !this.hospitalized) {// infected
+    var a = lerpColor(C_FIT, C_INFECT, min(1.0, this._counter / INCUBATION_ITER));
+    stroke(C_INFECT);
+    fill(a);
+  } else if (this.refused) {
+    stroke(C_INFECT);
+  } else if (this.hospitalized) {
+    fill(C_HOSPITAL);
+  } else {// normal 
+    stroke(C_FIT)
+  }
+
+  push();
+  translate(this.position.x, this.position.y);
+  scale(1.0 + this._anim_count / INFECT_ANIM_DUR);
+
+  if (this.stay) { // 自宅待機
+    //rect(-this.r, -this.r, this.r * 2, this.r * 2);
+    image(yuriko, 0, 0, 32, 32);
+  } else if (this.hospitalized || this.refused) { // 治療済み、または治療拒否
+    scale(0.7);
+    if (this.hospitalized) { // 治療済み
+      ellipse(0, 0, this.r * 4, this.r * 4);
+      fill(255);
+    }
+    if (this.refused) fill(C_INFECT); // 治療拒否
+    //rect(-this.r * 1.5, this.r * -0.5, this.r * 3.0, this.r);
+    //rect(-this.r * 0.5, this.r * -1.5, this.r, this.r * 3.0);
+  } else if (this.dead) { // 死者
+    scale(0.5);
+    line(this.r * -1, this.r * -1, this.r, this.r);
+    line(this.r, this.r * -1, this.r * -1, this.r);
+  } else {
+    rotate(theta);
+    image(ganmen, 0, 0);
+    /*
+    beginShape();
+    vertex(0, -this.r);
+    vertex(-this.r, this.r * 1.5);
+    vertex(this.r, this.r * 1.5);
+    endShape(CLOSE);
+    */
+  }
+  if (this.infected && !this.hospitalized) {
+    noFill();
+    stroke("#ff222210");
+    scribble.scribbleEllipse(0, 0, INFECT_DIST * 2, INFECT_DIST * 2);
+  }
+
+  // transition animation
+  if (this._anim_count > 0 && this.infected && !this.hospitalized && !this.cure && !this.dead) {
+    noFill();
+    stroke(255, 0, 0, int(this._anim_count / INFECT_ANIM_DUR * 255.));
+    scribble.scribbleEllipse(0, 0,
+    INFECT_ANIM_DUR - this._anim_count, INFECT_ANIM_DUR - this._anim_count);
+    this._anim_count--;
+  }
+
+  pop();
+};
+
+var last_draw = 0;
+
+function updateGraph(index) {
+  if (index < MAX_GRAPH_SIZE) {
+    myChart.data.datasets[0].data[index] = flock.countHospitalized() / float(TOTAL_NUM) * 100.;
+    myChart.data.datasets[1].data[index] = flock.countInfected() / float(TOTAL_NUM) * 100.;
+    myChart.data.datasets[2].data[index] = flock.countCured() / float(TOTAL_NUM) * 100.;
+    myChart.data.datasets[3].data[index] = flock.countDead() / float(TOTAL_NUM) * 100.;
+    myChart.update();
+  }
+}
+
+function mouseClicked() {
+  reset();
+}
+
+// The Nature of Code
+// Daniel Shiffman
+// http://natureofcode.com
+
+// Flock object
+// Does very little, simply manages the array of all the boids
+
+function Flock() {
+  // An array for all the boids
+  this.boids = []; // Initialize the array
+}
+
+Flock.prototype.run = function () {
+  for (var i = 0; i < this.boids.length; i++) {if (window.CP.shouldStopExecution(2)) break;
+    this.boids[i].run(this.boids, i); // Passing the entire list of boids to each boid individually
+  }window.CP.exitedLoop(2);
+};
+
+Flock.prototype.countInfected = function () {
+  var count = 0;
+  for (var i = 0; i < this.boids.length; i++) {if (window.CP.shouldStopExecution(3)) break;
+    if (this.boids[i].infected && !this.boids[i].hospitalized) count++;
+  }window.CP.exitedLoop(3);
+  return count;
+};
+
+Flock.prototype.countDead = function () {
+  var count = 0;
+  for (var i = 0; i < this.boids.length; i++) {if (window.CP.shouldStopExecution(4)) break;
+    if (this.boids[i].dead) count++;
+  }window.CP.exitedLoop(4);
+  return count;
+};
+
+Flock.prototype.countHospitalized = function () {
+  var count = 0;
+  for (var i = 0; i < this.boids.length; i++) {if (window.CP.shouldStopExecution(5)) break;
+    if (this.boids[i].hospitalized) count++;
+  }window.CP.exitedLoop(5);
+  return count;
+};
+
+Flock.prototype.countCured = function () {
+  var count = 0;
+  for (var i = 0; i < this.boids.length; i++) {if (window.CP.shouldStopExecution(6)) break;
+    if (this.boids[i].cured) count++;
+  }window.CP.exitedLoop(6);
+  return count;
+};
+
+Flock.prototype.addBoid = function (b) {
+  this.boids.push(b);
+};
+
+// The Nature of Code
+// Daniel Shiffman
+// http://natureofcode.com
+
+// Boid class
+// Methods for Separation, Cohesion, Alignment added
+
+function Boid(x, y) {
+  this.acceleration = createVector(0, 0);
+  this.velocity = createVector(random(-1, 1), random(-1, 1));
+  this.position = createVector(x, y);
+  this.r = 3.5;
+  this.maxspeed = 3; // Maximum speed
+  this.maxforce = 0.05; // Maximum steering force
+
+  this.infected = false;
+  this.hospitalized = false;
+  this._anim_count = 0;
+  this._counter = 0;
+  this.stay = false;
+
+  this.targets = [];
+  this.targets.push(createVector(random(-200, 200) + width * 0.5,
+  random(-200, 200) + height * 0.5));
+  this.targets.push(createVector(random(width * 0.2, width * 0.8),
+  random(height * 0.2, height * 0.8)));
+  this.current_target = 0;
+}
+
+Boid.prototype.run = function (boids, index) {
+  this.flock(boids);
+  this.update(index);
+  this.borders();
+  this.render();
+};
+
+Boid.prototype.applyForce = function (force) {
+  // We could add mass here if we want A = F / M
+  force.mult(2.0);
+  this.acceleration.add(force);
+};
+
+// We accumulate a new acceleration each time based on three rules
+Boid.prototype.flock = function (boids) {
+  if (!this.isMobile()) return;
+
+  var sep = this.separate(boids); // Separation
+  var ali = this.align(boids); // Alignment
+  var coh = this.cohesion(boids); // Cohesion
+  // Arbitrarily weight these forces
+  sep.mult(0.4);
+  ali.mult(0.02);
+  coh.mult(0.01);
+  // Add the force vectors to acceleration
+  this.applyForce(sep);
+  this.applyForce(ali);
+  this.applyForce(coh);
+
+  // User-defined Attactions
+  var attraction_dist = 100;
+  var att = createVector(0, 0);
+  for (var i = 0; i < attractions.length; i++) {if (window.CP.shouldStopExecution(7)) break;
+    var d = p5.Vector.dist(this.position, attractions[i]);
+    if (d < attraction_dist) att.add(this.seek(attractions[i]));
+  }window.CP.exitedLoop(7);
+  att.mult(0.2);
+  this.applyForce(att);
+
+  // Commuting
+  // var t = this.targets[this.current_target];
+  // att = this.seek(t);
+  // att.mult(0.1);
+  // this.applyForce(att);
+  // var d = p5.Vector.dist(this.position, t);
+  // if (d < 100.0) this.current_target = (this.current_target + 1) % 2; 
+};
+
+// Method to update location
+Boid.prototype.update = function (index) {
+  // move
+  if (this.isMobile()) {
+    // Update velocity
+    this.velocity.add(this.acceleration);
+    // Limit speed
+    this.velocity.limit(this.maxspeed);
+    this.position.add(this.velocity);
+  }
+  // Reset accelertion to 0 each cycle
+  this.acceleration.mult(0);
+
+  // Cured!
+  if (this.infected && this.hospitalized && random(1.0) < CURE_RATE) {
+    this.getCured();
+  }
+
+  // Infected
+  if (this.infected) {
+    this.infect_iter++;
+
+    // After incubation period
+    if (this.infect_iter < INCUBATION_ITER) {
+      // if you are lucky and get tested...
+      if (!this.hospitalized && random(0.0, 1.0) < TEST_RATE) {
+        this.getHospitalized();
+      }
+    } else {
+      if (!this.hospitalized) this.getHospitalized();
+
+      var motality_rate = MOTALITY_RATE;
+      if (this.refused) motality_rate *= 4.0;
+      if (random(0.0, 1.0) < motality_rate) this.die();
+    }
+
+    if (this.infect_iter > INCUBATION_ITER * 3) this.die();
+  }
+
+  // for animation
+  this._counter++;
+};
+
+// A method that calculates and applies a steering force towards a target
+// STEER = DESIRED MINUS VELOCITY
+Boid.prototype.seek = function (target) {
+  var desired = p5.Vector.sub(target, this.position); // A vector pointing from the location to the target
+  // Normalize desired and scale to maximum speed
+  desired.normalize();
+  desired.mult(this.maxspeed);
+  // Steering = Desired minus Velocity
+  var steer = p5.Vector.sub(desired, this.velocity);
+  steer.limit(this.maxforce); // Limit to maximum steering force
+  return steer;
+};
+
+// Wraparound
+Boid.prototype.borders = function () {
+  if (this.position.x < -this.r) this.position.x = width + this.r;
+  if (this.position.y < -this.r) this.position.y = height + this.r;
+  if (this.position.x > width + this.r) this.position.x = -this.r;
+  if (this.position.y > height + this.r) this.position.y = -this.r;
+};
+
+// Separation
+// Method checks for nearby boids and steers away
+Boid.prototype.separate = function (boids) {
+  // if (!this.isMobile()) return createVector(0,0);
+
+  var desiredseparation = PERSONAL_DISTANCE;
+  if (this.stay) desiredseparation *= 2.0;
+  var steer = createVector(0, 0);
+  var count = 0;
+  // For every boid in the system, check if it's too close
+  for (var i = 0; i < boids.length; i++) {if (window.CP.shouldStopExecution(8)) break;
+    var d = p5.Vector.dist(this.position, boids[i].position);
+    // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
+    if (d > 0 && d < desiredseparation) {
+      // Calculate vector pointing away from neighbor
+      var diff = p5.Vector.sub(this.position, boids[i].position);
+      diff.normalize();
+      diff.div(d); // Weight by distance
+      steer.add(diff);
+      count++; // Keep track of how many
+    }
+
+    // Infection
+    if (!this.infected && d > 0 && d < INFECT_DIST && boids[i].infected && !boids[i].hospitalized) {
+      if (random(0, 1.0) < INFECT_RATE) {
+        this.getInfected();
+      }
+    }
+  }
+
+  // Average -- divide by how many
+  window.CP.exitedLoop(8);if (count > 0) {
+    steer.div(count);
+  }
+
+  // As long as the vector is greater than 0
+  if (steer.mag() > 0) {
+    // Implement Reynolds: Steering = Desired - Velocity
+    steer.normalize();
+    steer.mult(this.maxspeed);
+    steer.sub(this.velocity);
+    steer.limit(this.maxforce);
+  }
+  return steer;
+};
+
+// Alignment
+// For every nearby boid in the system, calculate the average velocity
+Boid.prototype.align = function (boids) {
+  if (!this.isMobile()) return createVector(0, 0);
+  var neighbordist = 50;
+  var sum = createVector(0, 0);
+  var count = 0;
+  for (var i = 0; i < boids.length; i++) {if (window.CP.shouldStopExecution(9)) break;
+    if (boids[i].isMobile()) {
+      var d = p5.Vector.dist(this.position, boids[i].position);
+      if (d > 0 && d < neighbordist) {
+        sum.add(boids[i].velocity);
+        count++;
+      }
+    }
+  }window.CP.exitedLoop(9);
+  if (count > 0) {
+    sum.div(count);
+    sum.normalize();
+    sum.mult(this.maxspeed);
+    var steer = p5.Vector.sub(sum, this.velocity);
+    steer.limit(this.maxforce);
+    return steer;
+  } else {
+    return createVector(0, 0);
+  }
+};
+
+// Cohesion
+// For the average location (i.e. center) of all nearby boids, calculate steering vector towards that location
+Boid.prototype.cohesion = function (boids) {
+  if (!this.isMobile()) return createVector(0, 0);
+  var neighbordist = 50;
+  var sum = createVector(0, 0); // Start with empty vector to accumulate all locations
+  var count = 0;
+  for (var i = 0; i < boids.length; i++) {if (window.CP.shouldStopExecution(10)) break;
+    if (boids[i].isMobile()) {
+      var d = p5.Vector.dist(this.position, boids[i].position);
+      if (d > 0 && d < neighbordist) {
+        sum.add(boids[i].position); // Add location
+        count++;
+      }
+    }
+  }window.CP.exitedLoop(10);
+  if (count > 0) {
+    sum.div(count);
+    return this.seek(sum); // Steer towards the location
+  } else {
+    return createVector(0, 0);
+  }
+};
+
+Boid.prototype.isMobile = function () {
+  return !(this.dead || this.stay || this.hospitalized || this.refused);
+};
+
+Boid.prototype.getInfected = function () {
+  this.infected = true;
+  this.hospitalized = false;
+  this.cured = false;
+  this.refused = false;
+  this.infect_iter = 0; // start of the incubation period
+  this.statusChanged();
+};
+
+Boid.prototype.getHospitalized = function () {
+  if (flock.countHospitalized() < HOSPITAL_CAPACITY) {// check if there is vacancy  
+    this.infected = true;
+    this.hospitalized = true;
+    this.cured = false;
+    this.refused = false;
+    this.dead = false;
+    this.statusChanged();
+  } else if (!this.refused) {// over capacity
+    this.refused = true;
+    this.statusChanged();
+  }
+};
+
+Boid.prototype.die = function () {
+  this.dead = true;
+  this.cured = false;
+  this.infected = false;
+  this.hospitalized = false;
+  this.refused = false;
+  this.statusChanged();
+};
+
+Boid.prototype.getCured = function () {
+  this.hospitalized = false;
+  this.infected = false;
+  this.cured = true;
+  this.dead = false;
+  this.refused = false;
+  this.statusChanged();
+};
+
+Boid.prototype.statusChanged = function () {
+  this._anim_count = 20;
+  this._counter = 0;
+};
+
+function createGraph() {
+  // Graph
+  var ctx = document.getElementById("myChart").getContext('2d');
+  myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: new Array(MAX_GRAPH_SIZE),
+      datasets: [{
+        label: 'スーパークレイジー君検討中', // Name the series
+        data: new Array(MAX_GRAPH_SIZE), // Specify the data values array
+        fill: true,
+        borderColor: '#2222ff', // Add custom color border (Line)
+        backgroundColor: '#2222ff', // Add custom color background (Points and Fill)
+        borderWidth: 1, // Specify bar border width
+        pointRadius: 0 },
+      {
+        label: 'スーパークレイジー君派', // Name the series
+        data: new Array(MAX_GRAPH_SIZE), // Specify the data values array
+        fill: true,
+        borderColor: '#ff2222', // Add custom color border (Line)
+        backgroundColor: '#ff2222', // Add custom color background (Points and Fill)
+        borderWidth: 1, // Specify bar border width
+        pointRadius: 0 },
+      {
+        label: '小池百合子派', // Name the series
+        data: new Array(MAX_GRAPH_SIZE), // Specify the data values array
+        fill: true,
+        borderColor: '#22ff22', // Add custom color border (Line)
+        backgroundColor: '#22ff22', // Add custom color background (Points and Fill)
+        borderWidth: 1, // Specify bar border width
+        pointRadius: 0 },
+      {
+        label: '棄権', // Name the series
+        data: new Array(MAX_GRAPH_SIZE), // Specify the data values array
+        fill: true,
+        borderColor: '#000000', // Add custom color border (Line)
+        backgroundColor: '#000000', // Add custom color background (Points and Fill)
+        borderWidth: 1, // Specify bar border width
+        pointRadius: 0 }] },
+
+    options: {
+      scales: {
+        yAxes: [{
+          id: "scale-id",
+          display: true,
+          stacked: true,
+          ticks: {
+            suggestedMin: 0,
+            max: 100,
+            display: false } }],
+
+
+        xAxes: [{
+          display: true,
+          ticks: {
+            suggestedMin: 0,
+            suggestedMax: MAX_GRAPH_SIZE } }] },
+
+
+
+      annotation: {
+        drawTime: 'afterDatasetsDraw', // (default)
+
+        // Array of annotation configuration objects
+        // See below for detailed descriptions of the annotation options
+        annotations: [{
+          drawTime: 'afterDraw', // overrides annotation.drawTime if set
+          id: 'a-line-1', // optional
+          type: 'line',
+          mode: 'horizontal',
+          scaleID: 'scale-id',
+          value: 300,
+          borderColor: '#2222ff55',
+          borderWidth: 1,
+          label: {
+            backgroundColor: '#2222ff99',
+            content: "スーパークレイジー君当選",
+            enabled: true },
+
+
+          // Fires when the user clicks this annotation on the chart
+          // (be sure to enable the event in the events array below).
+          onClick: function (e) {
+            // `this` is bound to the annotation element
+          } }] },
+
+
+      animation: false,
+      responsive: false, // Instruct chart js to respond nicely.
+      maintainAspectRatio: false // Add to prevent default behaviour of full-width/height 
+    } });
+
+}
+//# sourceURL=pen.js
+    </script>
+
+  
+
+  <script src="https://static.codepen.io/assets/editor/iframe/iframeRefreshCSS-e03f509ba0a671350b4b363ff105b2eb009850f34a2b4deaadaa63ed5d970b37.js"></script>
+
+
+
+ 
+
+
