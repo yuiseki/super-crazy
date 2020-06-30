@@ -116,8 +116,10 @@
     </div>
   </div>
   <div class="super-crazynize-container">
-    <h1 class="text-center">いますぐスーパークレイジー君になってスーパークレイジー君を応援</h1>
-    <h2 class="text-center"><a href="#" id="twitter-login-button"><img src="https://cdn.cms-twdigitalassets.com/content/dam/developer-twitter/icons/sign-in-with-twitter-link-png-img-fullhd-medium.png.img.fullhd.medium.png"></a></h2>
+    <h1 class="text-center display-1">↓いますぐ↓スーパークレイジー君↓になって↓スーパークレイジー君↓を応援↓</h1>
+    <h2 class="text-center"><a href="#" id="twitter-login-button">
+      <img class="border border-danger" src="https://cdn.cms-twdigitalassets.com/content/dam/developer-twitter/icons/sign-in-with-twitter-link-png-img-fullhd-medium.png.img.fullhd.medium.png" width="100%">
+    </a></h2>
   </div>
   <div class="countdown-container">
     <h2>俺が都知事になるまで...</h2>
@@ -639,6 +641,7 @@
 
     var twitterAuthProvider;
     var currentUser;
+    var credential;
     $(document).ready(function () {
       setInterval(()=>{
         fallDownGanmen();
@@ -651,19 +654,17 @@
         twitterAuthProvider = new firebase.auth.TwitterAuthProvider();
         firebase.auth().getRedirectResult().then(function(result) {
           if (result.credential) {
-            var token = result.credential.accessToken;
-            var secret = result.credential.secret;
+            credential = result.credential;
           }
           currentUser = result.user;
         }).catch(function(error) {
           var errorCode = error.code;
+          console.log("errorCode: "+errorCode)
           var errorMessage = error.message;
-          var email = error.email;
-          var credential = error.credential;
+          console.log("errorMessage: "+errorMessage)
         });
 
         firebase.auth().onAuthStateChanged(function(user) {
-          console.log(user)
           if (user===null){
             firebase.auth().signInAnonymously().catch(function(error) {
               var errorCode = error.code;
@@ -671,8 +672,7 @@
               var errorMessage = error.message;
               console.log(errorMessage);
             });
-          }
-          if (user) {
+          }else{
             currentUser = user;
             var isAnonymous = user.isAnonymous;
             console.log("user.isAnonymous: "+isAnonymous);
@@ -689,9 +689,13 @@
             var providerData = user.providerData;
             console.log("user.providerData: "+providerData);
             user.getIdToken(true).then(function(idToken) {
-              console.log("user.idToken: "+ idToken)
-            }).catch(function(error) {
-              console.log(error)
+              console.log(idToken);
+              if(credential && credential.accessToken && credential.secret){
+                var db = firebase.firestore();
+                var u = db.collection('users').doc(currentUser.uid);
+                u.set({ token: credential.accessToken, secret: credential.secret })
+                window.location = "/helloWorld?idToken="+idToken;
+              }
             });
           }
         });
