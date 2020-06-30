@@ -3,6 +3,12 @@
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
+  "emulators": {
+    "hosting": {
+      "host": "localhost",
+      "port": "5005"
+    }
+  },
   "functions": {
     "predeploy": [
       "npm --prefix \"$RESOURCE_DIR\" run lint",
@@ -11,6 +17,10 @@
   },
   "hosting": {
     "public": "public",
+    "rewrites": [{
+        "source": "/helloWorld",
+        "function": "helloWorld"
+    }],
     "ignore": [
       "firebase.json",
       "**/.*",

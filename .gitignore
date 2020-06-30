@@ -5,6 +5,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 firebase-debug.log*
+.runtimeconfig.json
+api-project-*
+super-crazy-*.json
 
 # Firebase cache
 .firebase/

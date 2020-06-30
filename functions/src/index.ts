@@ -20,11 +20,12 @@ export const helloWorld = functions.https.onRequest((request, response) => {
       admin.auth().getUser(uid)
         .then(function(userRecord: any) {
           console.log('Successfully fetched user data:', userRecord.toJSON());
+          response.send("successfully fetch uid: "+uid);
         })
         .catch(function(error: any) {
           console.log('Error fetching user data:', error);
+          response.send("failed to fetch uid: "+uid);
         });
-      response.send(uid);
     }).catch(function(error: any) {
       console.log(error)
     });
