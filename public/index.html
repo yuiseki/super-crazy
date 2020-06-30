@@ -472,12 +472,12 @@
     var incrementUnit = bigInt(10000);
     setInterval(()=>{
       if (clickerCount.lt(nextClickerCount)){
-        clickerCount.next();
-        var countJa = num2ja(clickerCount.toString());
+        clickerCount = clickerCount.plus(11111);
+        var countJa = num2ja(clickerCount);
         var countDom = document.getElementById('count');
         countDom.innerHTML = countJa;
         var digit = clickerCount.toString().length;
-        incrementUnit = Math.floor(Math.pow(10, digit-3));
+        incrementUnit = Math.floor(Math.pow(10, digit-5));
         var unitJa = num2ja(incrementUnit);
         var unitDom = document.getElementById('unit');
         unitDom.innerHTML = unitJa;
@@ -556,31 +556,40 @@
         clickerContext.clearRect(0, 0, clickerCanvas.width, clickerCanvas.height);
         
         clickerContext.save();
-        clickerContext.translate(clickerCanvas.width/2+16, clickerCanvas.height/2-16);
+        clickerContext.translate(clickerCanvas.width/2+16, clickerCanvas.height/2);
         clickerContext.rotate(angle * (Math.PI / 180));
-        if(leftPressed){
+        if(leftPressed || Math.floor(angle)%30===0){
             clickerContext.drawImage(ganmen, -imageSize/2+32, -imageSize/2+32, 64, 64);
         }else{
             clickerContext.drawImage(ganmen, -imageSize/2, -imageSize/2, 128, 128);
         }
         clickerContext.restore();
 
-        if (Math.floor(angle)%20===0){
+        if (Math.floor(angle)%30===0){
           drawSize32 = 32;
         }else{
           drawSize32 = 24;
         }
         var i = 0;
-        while(i<5){
+        while(i<6){
           i++;
           // 左
           clickerContext.drawImage(ganmen, imageOriginZero, imageOriginZero, imageSize, imageSize, (clickerCanvas.width/2)-64, (clickerCanvas.height/2)-128+(32*i), drawSize32, drawSize32);
+          clickerContext.drawImage(ganmen, imageOriginZero, imageOriginZero, imageSize, imageSize, (clickerCanvas.width/2)-96, (clickerCanvas.height/2)-128+(32*i), drawSize32, drawSize32);
+          clickerContext.drawImage(ganmen, imageOriginZero, imageOriginZero, imageSize, imageSize, (clickerCanvas.width/2)-128, (clickerCanvas.height/2)-128+(32*i), drawSize32, drawSize32);
+          clickerContext.drawImage(ganmen, imageOriginZero, imageOriginZero, imageSize, imageSize, (clickerCanvas.width/2)-160, (clickerCanvas.height/2)-128+(32*i), drawSize32, drawSize32);
           // 右
           clickerContext.drawImage(ganmen, imageOriginZero, imageOriginZero, imageSize, imageSize, (clickerCanvas.width/2)+64, (clickerCanvas.height/2)-128+(32*i), drawSize32, drawSize32);
+          clickerContext.drawImage(ganmen, imageOriginZero, imageOriginZero, imageSize, imageSize, (clickerCanvas.width/2)+96, (clickerCanvas.height/2)-128+(32*i), drawSize32, drawSize32);
+          clickerContext.drawImage(ganmen, imageOriginZero, imageOriginZero, imageSize, imageSize, (clickerCanvas.width/2)+128, (clickerCanvas.height/2)-128+(32*i), drawSize32, drawSize32);
+          clickerContext.drawImage(ganmen, imageOriginZero, imageOriginZero, imageSize, imageSize, (clickerCanvas.width/2)+128, (clickerCanvas.height/2)-128+(32*i), drawSize32, drawSize32);
+          clickerContext.drawImage(ganmen, imageOriginZero, imageOriginZero, imageSize, imageSize, (clickerCanvas.width/2)+160, (clickerCanvas.height/2)-128+(32*i), drawSize32, drawSize32);
           // 上
+          clickerContext.drawImage(ganmen, imageOriginZero, imageOriginZero, imageSize, imageSize, (clickerCanvas.width/2)-96+(32*i), (clickerCanvas.height/2)-64, drawSize32, drawSize32);
           clickerContext.drawImage(ganmen, imageOriginZero, imageOriginZero, imageSize, imageSize, (clickerCanvas.width/2)-96+(32*i), (clickerCanvas.height/2)-96, drawSize32, drawSize32);
           // 下
           clickerContext.drawImage(ganmen, imageOriginZero, imageOriginZero, imageSize, imageSize, (clickerCanvas.width/2)-96+(32*i), (clickerCanvas.height/2)+32, drawSize32, drawSize32);
+          clickerContext.drawImage(ganmen, imageOriginZero, imageOriginZero, imageSize, imageSize, (clickerCanvas.width/2)-96+(32*i), (clickerCanvas.height/2)+64, drawSize32, drawSize32);
         }
     };
 
