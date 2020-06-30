@@ -30,6 +30,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script src="https://apis.google.com/js/platform.js"></script>
+  <script src="https://peterolson.github.io/BigInteger.js/BigInteger.min.js"></script>
+
 
   <!-- bootstrap -->
   <!-- CSS only -->
@@ -234,7 +236,7 @@
       const keta = ['', '千', '万', '億', '兆', '京'];
       let jaNum = '';
       let count = 0;
-      num = String(num).replace(',', '');
+      num = num.toString();
       // 千
       if(num.length <= 3) {
         return num;
@@ -242,26 +244,27 @@
       else {
         const n = num.slice(-3) - 0 + '';
         jaNum = [n !== '0' ? `${n}${keta[count]}` : '', jaNum].join('');
-        num = (num / 1000 | 0) + '';
+        num = bigInt(num).divide(bigInt(1000)).toString();
         count++;
       }
       // 万
       if(num.length > 1) {
         const n = num.slice(-1) - 0 + '';
         jaNum = [n !== '0' ? `${n}${keta[count]}` : '', jaNum].join('');
-        num = (num / 10 | 0) + '';
+        num = bigInt(num).divide(bigInt(10)).toString();
         count++;
       }
       // それ以降
       while(num.length > 4) {
         const n = num.slice(-4) - 0 + '';
         jaNum = [n !== '0' ? `${n}${keta[count]}` : '', jaNum].join('');
-        num = (num / 10000 | 0) + '';
+        num = bigInt(num).divide(bigInt(10000)).toString();
         count++;
       }
       jaNum = [num !== '0' ? `${num}${keta[count]}` : '', jaNum].join('');
       return jaNum;
     }
+    //alert(num2ja("179893486796973"))// 179兆8934億8679万6973
 
     /* countdown */
     var countdownCanvas = document.getElementById("countdown");
@@ -280,7 +283,7 @@
         var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         var seconds = Math.floor((distance % (1000 * 60)) / 1000);
         ato = days * 3600 * 24 + hours * 3600 + minutes * 60 + seconds;
-    }, 1000);
+    }, 1);
 
     var drawCountdown = function() {
         countdownContext.clearRect(0, 0, countdownCanvas.width, countdownCanvas.height);
@@ -462,45 +465,40 @@
             break;
         }
     };
-    var clickerCount = 0;
-    var nextClickerCount = 0;
-    var incrementNumber = 0;
-    var incrementWait = 0;
-    var incrementUnit = 10000;
+    var clickerCount = bigInt();
+    var nextClickerCount = bigInt();
+    var incrementNumber = bigInt();
+    var incrementWait = bigInt();
+    var incrementUnit = bigInt(10000);
     setInterval(()=>{
-      if (clickerCount<=nextClickerCount){
-        clickerCount++;
-        clickerCount = Math.floor(clickerCount);
-        var countJa = num2ja(clickerCount);
+      if (clickerCount.lt(nextClickerCount)){
+        clickerCount.next();
+        var countJa = num2ja(clickerCount.toString());
         var countDom = document.getElementById('count');
         countDom.innerHTML = countJa;
-        var digit = String(clickerCount).length;
-        incrementUnit = Math.floor(Math.pow(10, digit-2));
+        var digit = clickerCount.toString().length;
+        incrementUnit = Math.floor(Math.pow(10, digit-3));
         var unitJa = num2ja(incrementUnit);
         var unitDom = document.getElementById('unit');
         unitDom.innerHTML = unitJa;
       }
-    }, 1);
+    }, 10);
     var incrementCounter = function(nextClickerCount){
-      countJa = num2ja(nextClickerCount);
+      countJa = num2ja(nextClickerCount.toString());
       text = "スーパークレイジー君 予測得票数 "+countJa+"票";
 
     };
     var incrementFirebase = function(){
       firebase.analytics().logEvent('clicker_count_up');
-      // 1000億以上は許さない
-      if(incrementUnit > 10000000000 ){
-        return;
-      }
-      incrementWait = incrementWait + 1;
-      incrementNumber = incrementNumber + incrementUnit + 1;
-      nextClickerCount = incrementNumber + clickerCount;
-      clickerCount = clickerCount + incrementUnit;
+      incrementWait = incrementWait.next();
+      incrementNumber = incrementNumber.plus(incrementUnit).plus(1);
+      nextClickerCount = incrementNumber.plus(clickerCount);
+      clickerCount = clickerCount.plus(incrementUnit);
       incrementCounter(nextClickerCount);
       if(firebase.firestore && incrementWait > 10){
-        incrementWait = 0;
+        incrementWait = bigInt();
         console.log("updateFirebase");
-        var increment = firebase.firestore.FieldValue.increment(incrementNumber);
+        var increment = firebase.firestore.FieldValue.increment(incrementNumber.toJSNumber());
         var db = firebase.firestore();
         var counter = db.collection('clicker').doc('all');
         counter.update({ count: increment })
@@ -618,11 +616,11 @@
 
         var db = firebase.firestore();
         var counter = db.collection('clicker').doc('all').onSnapshot(function(doc){
-          var newClickerCount = doc.data()["count"];
-          if (nextClickerCount === 0){
+          var newClickerCount = bigInt(Math.floor(doc.data()["count"]));
+          if (nextClickerCount.eq(0)){
             nextClickerCount = newClickerCount;
           }
-          if(clickerCount < newClickerCount){
+          if(clickerCount.lt(newClickerCount)){
             clickerCount = newClickerCount;
           }
         })
