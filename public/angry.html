@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.min.js"></script>
+    <script src="https://unpkg.com/matter-js@0.14.2/build/matter.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
+    <meta charset="utf-8" />
+    <title>Angry スーパークレイジー君</title>
+
+    <!-- og start -->
+    <meta property="og:url" content="https://super-crazy.jp/angry.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Angry スーパークレイジー君" />
+    <meta property="og:description" content="百合子か、俺か" />
+    <meta property="og:site_name" content="Angry スーパークレイジー君" />
+    <meta property="og:image" content="https://super-crazy.jp/super-crazy-majime-ogp.png" />
+    <meta property='fb:app_id' content='https://super-crazy.jp/angry.html'>
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@makoto__9999" />
+    <!-- og end -->
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+  </head>
+ <body>
+   <h1 style="display: inline;">Angry スーパークレイジー君</h1>
+    <a id="twitter-share-button" class="twitter-share-button"
+      href="https://twitter.com/intent/tweet"
+      data-text="スーパークレイジー君 西本誠 公認非公式サイト"
+      data-hashtags="スーパークレイジー君,西本誠,東京都知事選挙"
+      data-size="large">
+        Tweet
+    </a>
+<script>
+class Box {
+  constructor(x, y, w, h) {
+    const options = {
+      restitution: 0.5
+    };
+    this.body = Matter.Bodies.rectangle(x, y, w, h, options);
+    Matter.World.add(world, this.body);
+    this.w = w;
+    this.h = h;
+  }
+
+  show() {
+    const pos = this.body.position;
+    const angle = this.body.angle;
+    push();
+    translate(pos.x, pos.y);
+    rotate(angle);
+    fill(255);
+    rectMode(CENTER);
+    imageMode(CENTER);
+    image(boxImg, 0, 0, this.w, this.h);
+    pop();
+  }
+}
+
+class Ground extends Box {
+  constructor(x, y, w, h) {
+    super(x, y, w, h);
+    this.body.isStatic = true;
+  }
+
+  show() {
+    const pos = this.body.position;
+    const angle = this.body.angle;
+    push();
+    translate(pos.x, pos.y);
+    rotate(angle);
+    noStroke();
+    fill(255);
+    rectMode(CENTER);
+    rect(0, 0, this.w, this.h);
+    pop();
+  }
+}
+
+class SlingShot {
+  constructor(x, y, body) {
+    const options = {
+      pointA: {
+        x: x,
+        y: y
+      },
+      bodyB: body,
+      stiffness: 0.02,
+      length: 10
+    };
+  }
+
+  fly() {
+    this.sling.bodyB = null;
+  }
+
+  show() {
+    if (this.sling.bodyB) {
+      stroke(0);
+      strokeWeight(4);
+      const posA = this.sling.pointA;
+      const posB = this.sling.bodyB.position;
+      line(posA.x, posA.y, posB.x, posB.y);
+    }
+  }
+
+  attach(body) {
+    this.sling.bodyB = body;
+  }
+}
+
+class Bird {
+  constructor(x, y, r) {
+    const options = {
+      restitution: 0.5
+    };
+    this.body = Matter.Bodies.circle(x, y, r, options);
+    Matter.Body.setMass(this.body, this.body.mass * 4);
+    Matter.World.add(world, this.body);
+    this.r = r;
+  }
+
+  show() {
+    const pos = this.body.position;
+    const angle = this.body.angle;
+    push();
+    translate(pos.x, pos.y);
+    rotate(angle);
+    imageMode(CENTER);
+    image(dotImg, 0, 0, this.r * 2, this.r * 2);
+    pop();
+  }
+}
+
+
+
+
+
+const { Engine, World, Bodies, Mouse, MouseConstraint, Constraint } = Matter;
+
+let ground;
+const boxes = [];
+let bird;
+let world, engine;
+let mConstraint;
+let slingshot;
+
+let dotImg;
+let boxImg;
+let bkgImg;
+
+function preload() {
+  dotImg = loadImage('ganmenx128.png');
+  boxImg = loadImage('yuriko.jpg');
+  bkgImg = loadImage('super-crazy.jpg');
+}
+
+function setup() {
+  const canvas = createCanvas(711, 500);
+  engine = Engine.create();
+  world = engine.world;
+  ground = new Ground(width / 2, height - 10, width, 20);
+  setupBox();
+  bird = new Bird(150, 300, 64);
+
+  slingshot = new SlingShot(250, 200, bird.body);
+
+  const mouse = Mouse.create(canvas.elt);
+  const options = {
+    mouse: mouse
+  };
+
+  // A fix for HiDPI displays
+  mouse.pixelRatio = pixelDensity();
+  mConstraint = MouseConstraint.create(engine, options);
+  World.add(world, mConstraint);
+}
+
+function setupBox(){
+  for (let i = 0; i < 10; i++) {
+    boxes[i] = new Box(450, 450 - i * 50, 42, 50);
+  }
+  for (let i = 10; i < 20; i++) {
+    boxes[i] = new Box(500, 450 - ((i-10) * 50), 42, 50);
+  }
+  for (let i = 20; i < 30; i++) {
+    boxes[i] = new Box(550, 450 - ((i-20) * 50), 42, 50);
+  }
+}
+
+function keyPressed() {
+  if (key == ' ') {
+    World.remove(world, bird.body);
+    bird = new Bird(150, 300, 64);
+    slingshot.attach(bird.body);
+  }
+}
+
+function mouseReleased() {
+  setTimeout(() => {
+    slingshot.fly();
+  }, 100);
+}
+
+function draw() {
+  background(bkgImg);
+  Matter.Engine.update(engine);
+  ground.show();
+  for (let box of boxes) {
+    box.show();
+  }
+  slingshot.show();
+  bird.show();
+  if(bird.body.position.x < 0 || bird.body.position.x > 450){
+    World.remove(world, bird.body);
+    bird = new Bird(150, 300, 64);
+    slingshot.attach(bird.body);
+  }
+  let boxWipeout = true;
+  boxes.forEach((i)=>{
+    if(0 < i.body.position.x && i.body.position.x < 450){
+      boxWipeout = false;
+    }
+  });
+  if(boxWipeout){
+    setupBox()
+  }
+}
+</script>
+
+  </body>
+</html>

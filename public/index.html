@@ -703,7 +703,7 @@
         });
 
         var db = firebase.firestore();
-        var counter = db.collection('clicker').doc('all').onSnapshot(function(doc){
+        var counter = db.collection('clicker').doc('all-0').onSnapshot(function(doc){
           var newClickerCount = bigInt(Math.floor(doc.data()["count"]));
           if (nextClickerCount.eq(0)){
             nextClickerCount = newClickerCount;
