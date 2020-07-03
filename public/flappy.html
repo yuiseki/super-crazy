@@ -1,0 +1,108 @@
+<!DOCTYPE html>  
+<html>  
+  <head>  
+    <title>Flappy スーパークレイジー君</title>  
+    <!-- og start -->
+    <meta property="og:url" content="https://super-crazy.jp/angry.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Flappy スーパークレイジー君" />
+    <meta property="og:description" content="百合子か、俺か" />
+    <meta property="og:site_name" content="Flappy スーパークレイジー君" />
+    <meta property="og:image" content="https://super-crazy.jp/super-crazy-majime-ogp.png" />
+    <meta property='fb:app_id' content='https://super-crazy.jp/angry.html'>
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@makoto__9999" />
+    <!-- og end -->
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+  </head>  
+  <body>
+    <div>
+        <h1 style="display: inline;">Flappy スーパークレイジー君</h1>
+        <a id="twitter-share-button" class="twitter-share-button"
+            href="https://twitter.com/intent/tweet"
+            data-text="Flappy スーパークレイジー君"
+            data-hashtags="スーパークレイジー君,西本誠,東京都知事選挙"
+            data-size="large">
+            Tweet
+        </a>
+    </div>
+
+     
+   <canvas id="canvas" width="320" height="640"></canvas>  
+     
+   <script>
+var cvs = document.getElementById("canvas");  
+var ctx = cvs.getContext("2d");  
+
+var bird = new Image();  
+bird.src = "ganmenx128.png";
+var bg = new Image();  
+bg.src = "super-crazy.jpg";  
+var fg = new Image();  
+fg.src = "kabuki.png";  
+var pipeNorth = new Image();  
+pipeNorth.src = "yuriko.jpg";  
+var pipeSouth = new Image();  
+pipeSouth.src = "yuriko.jpg"; 
+
+
+
+var gap = 300;  
+var constant;  
+var bX = 10;  
+var bY = 150;  
+var gravity = 1.5;  
+var score = 0;  
+
+document.addEventListener("keydown",moveUp);  
+  
+function moveUp(){  
+    bY -= 25;  
+}  
+
+var pipe = [];  
+
+pipe[0] = {  
+    x : cvs.width,  
+    y : 0  
+};  
+  
+function draw(){  
+    //drawImage(image, sourceX, sourceY, sourceWidth, sourceHeigh, drawX, drawY, drawWidth, drawHeight)
+    ctx.drawImage(bg, 0, 0, bg.width, bg.height, 0, 0, bg.width/2, bg.height/2);  
+    ctx.drawImage(bg, 0, 0, bg.width, bg.height, 0, bg.height/2, bg.width/2, bg.height/2);  
+    for(var i = 0; i < pipe.length; i++){  
+        ctx.drawImage(pipeNorth, 0, 0, pipeNorth.width, pipeNorth.height, pipe[i].x, pipe[i].y, pipeNorth.width/3, pipeNorth.height/3);  
+        ctx.drawImage(pipeSouth, 0, 0, pipeSouth.width, pipeSouth.height, pipe[i].x, pipe[i].y+gap, pipeSouth.width/3, pipeSouth.height/3);  
+        pipe[i].x--;  
+        if( pipe[i].x == 125 ){  
+            pipe.push({  
+                x : cvs.width,  
+                y : Math.floor(Math.random()*pipeNorth.height)-pipeNorth.height  
+            });   
+        }  
+        if( bX + bird.width/2 >= pipe[i].x && bX <= pipe[i].x + pipeNorth.width/3 && (bY <= pipe[i].y + pipeNorth.height/3 || bY+bird.height/3 >= pipe[i].y+constant) || bY + bird.height/2 >=  cvs.height - fg.height){  
+            location.reload();
+        }  
+        if(pipe[i].x == 5){  
+            score++;  
+        }  
+    }
+    
+    ctx.drawImage(fg, 0, cvs.height - fg.height);  
+    ctx.drawImage(fg, fg.width, cvs.height - fg.height);  
+    ctx.drawImage(bird, 0, 0, bird.width, bird.height, bX, bY, bird.width/2, bird.height/2);  
+    bY += gravity;  
+    ctx.fillStyle = "white";  
+    ctx.font = "45px Verdana";  
+    ctx.fillText("Score : "+score,10,cvs.height-20);
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = "3";
+    ctx.strokeText("Score : "+score,10,cvs.height-20)
+    requestAnimationFrame(draw);  
+}  
+  
+draw();
+   </script>  
+  </body>  
+</html> 
